@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Adil Games — Play Free HTML5 Games</title>
+<meta name="description" content="A fast, distraction-free arcade of free HTML5 games. Search, filter, and play instantly in your browser." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Cream / caramel / white palette */
+  --cream-0: #FFFDF9;
+  --cream-1: #FBF3E6;
+  --cream-2: #F5E6D0;
+  --white: #FFFFFF;
+  --caramel-1: #C68642;
+  --caramel-2: #A9662F;
+  --caramel-3: #7A4A24;
+  --caramel-soft: #E8C39E;
+  --text-0: #4A3423;
+  --text-1: #7A6552;
+  --text-2: #A4917C;
+  --border: rgba(122, 74, 36, .14);
+  --border-strong: rgba(122, 74, 36, .26);
+  --surface: rgba(255, 255, 255, .55);
+  --surface-hover: rgba(255, 255, 255, .8);
+  --gradient: linear-gradient(135deg, var(--caramel-1) 0%, var(--caramel-3) 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(198,134,66,.18), rgba(122,74,36,.14));
+  --shadow-glow: 0 0 0 1px rgba(198,134,66,.18), 0 14px 40px rgba(122,74,36,.16);
+  --r-lg: 22px; --r-md: 16px; --r-sm: 10px;
+  --font-display: 'Baloo 2','Segoe UI',sans-serif;
+  --font-body: 'Inter','Segoe UI',sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --header-h: 68px; --max-w: 1280px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--cream-1);
+  color: var(--text-0);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); margin: 0; letter-spacing: -0.01em; }
+p { margin: 0; color: var(--text-1); }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+::selection { background: rgba(198,134,66,.3); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--cream-1); }
+::-webkit-scrollbar-thumb { background: var(--caramel-soft); border-radius: 8px; border: 2px solid var(--cream-1); }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--caramel-2); outline-offset: 3px; border-radius: var(--r-sm); }
+
+/* Ambient warm background blobs */
+.aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.aurora::before, .aurora::after {
+  content: ""; position: absolute; width: 55vmax; height: 55vmax; border-radius: 50%;
+  filter: blur(120px); opacity: .35;
+}
+.aurora::before { top: -18vmax; left: -12vmax; background: var(--caramel-soft); animation: drift1 28s ease-in-out infinite alternate; }
+.aurora::after { bottom: -22vmax; right: -14vmax; background: #F3D9B0; animation: drift2 34s ease-in-out infinite alternate; }
+@keyframes drift1 { 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(7vmax,5vmax) scale(1.15);} }
+@keyframes drift2 { 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(-6vmax,-7vmax) scale(1.1);} }
+@media (prefers-reduced-motion: reduce) {
+  .aurora::before, .aurora::after { animation: none; }
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+
+.site-header {
+  position: sticky; top: 0; z-index: 50; height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 0 clamp(16px, 4vw, 40px);
+  background: rgba(255, 253, 249, .78);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-bottom: 1px solid var(--border);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; color: var(--caramel-3); }
+.brand-mark {
+  width: 32px; height: 32px; border-radius: 10px; background: var(--gradient);
+  display: grid; place-items: center; font-size: 16px; color: #fff;
+  box-shadow: 0 4px 16px rgba(122,74,36,.35); flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.game-title-block { min-width: 0; }
+.game-title-block .kicker { font-family: var(--font-mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-2); }
+.game-title-block h1 { font-size: 1.02rem; font-weight: 600; color: var(--text-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--r-sm);
+  font-size: .88rem; font-weight: 600; border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--text-0);
+  transition: background .18s, border-color .18s, transform .18s; white-space: nowrap;
+}
+.btn:hover { background: var(--surface-hover); border-color: var(--caramel-1); transform: translateY(-1px); }
+.btn-primary { background: var(--gradient); border-color: transparent; color: #fff; box-shadow: 0 8px 24px rgba(122,74,36,.3); }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-icon { width: 40px; height: 40px; padding: 0; justify-content: center; }
+
+.page { position: relative; z-index: 1; min-height: 100%; }
+
+/* Hero + WebGL bubble title */
+.hero { max-width: var(--max-w); margin: 0 auto; padding: clamp(24px,5vw,48px) clamp(16px,4vw,40px) 0; text-align: center; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: .72rem;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--caramel-3);
+  background: rgba(198,134,66,.12); border: 1px solid rgba(198,134,66,.3);
+  padding: 6px 12px; border-radius: 999px; margin-bottom: 8px;
+}
+.eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--caramel-2); box-shadow: 0 0 8px var(--caramel-2); }
+
+.hero-canvas-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  margin: 4px auto 0;
+  height: clamp(160px, 30vw, 260px);
+}
+#titleCanvas { width: 100%; height: 100%; display: block; }
+.hero-title-fallback {
+  display: none;
+  font-size: clamp(2.4rem, 9vw, 4.6rem);
+  font-weight: 800;
+  color: var(--caramel-3);
+  text-shadow: 0 1px 0 #fff, 0 2px 0 var(--caramel-soft), 0 6px 14px rgba(122,74,36,.35);
+}
+.hero-canvas-wrap.webgl-unavailable #titleCanvas { display: none; }
+.hero-canvas-wrap.webgl-unavailable .hero-title-fallback { display: block; }
+
+.hero p.lead { margin: 4px auto 0; font-size: clamp(.98rem, 1.6vw, 1.12rem); color: var(--text-1); max-width: 50ch; }
+
+.controls {
+  max-width: var(--max-w); margin: 0 auto; padding: 22px clamp(16px,4vw,40px) 20px;
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between;
+}
+.search-wrap { position: relative; flex: 1 1 280px; max-width: 420px; }
+.search-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-2); pointer-events: none; }
+.search-input {
+  width: 100%; padding: 12px 14px 12px 40px; border-radius: var(--r-sm);
+  border: 1px solid var(--border); background: var(--surface); color: var(--text-0);
+  font-size: .92rem; transition: border-color .18s, background .18s;
+}
+.search-input::placeholder { color: var(--text-2); }
+.search-input:focus { outline: none; border-color: var(--caramel-1); background: var(--white); }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 14px; border-radius: 999px; font-size: .82rem; font-weight: 600;
+  border: 1px solid var(--border); background: var(--surface); color: var(--text-1); transition: all .18s;
+}
+.chip:hover { color: var(--text-0); border-color: var(--caramel-1); }
+.chip.active { background: var(--gradient-soft); border-color: var(--caramel-1); color: var(--caramel-3); }
+.results-meta { max-width: var(--max-w); margin: 0 auto; padding: 0 clamp(16px,4vw,40px); color: var(--text-2); font-size: .82rem; font-family: var(--font-mono); }
+
+.grid {
+  max-width: var(--max-w); margin: 0 auto; padding: 20px clamp(16px,4vw,40px) 80px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px;
+}
+.card {
+  position: relative; border-radius: var(--r-lg); background: var(--surface);
+  border: 1px solid var(--border); overflow: hidden; backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1), border-color .28s, box-shadow .28s, background .28s;
+  display: flex; flex-direction: column; text-align: left; width: 100%;
+}
+.card:hover { transform: translateY(-6px); border-color: var(--caramel-1); box-shadow: var(--shadow-glow); background: var(--surface-hover); }
+.card-thumb { aspect-ratio: 16/10; display: grid; place-items: center; position: relative; font-size: 2.6rem; }
+.card-thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(122,74,36,.16) 100%); }
+.card-thumb .emoji { position: relative; z-index: 1; filter: drop-shadow(0 4px 10px rgba(122,74,36,.25)); }
+.card-category {
+  position: absolute; top: 10px; left: 10px; z-index: 2; font-family: var(--font-mono); font-size: .62rem;
+  letter-spacing: .06em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px;
+  background: rgba(255,255,255,.75); border: 1px solid var(--border-strong); color: var(--caramel-3);
+}
+.card-body { padding: 14px 16px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card-title { font-family: var(--font-display); font-weight: 600; font-size: .98rem; color: var(--text-0); }
+.card-play {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--white);
+  border: 1px solid var(--border-strong); display: grid; place-items: center; flex-shrink: 0;
+  transition: background .18s, transform .18s; color: var(--caramel-2);
+}
+.card:hover .card-play { background: var(--gradient); color: #fff; transform: scale(1.08); }
+.empty-state { max-width: var(--max-w); margin: 0 auto; padding: 60px clamp(16px,4vw,40px) 100px; text-align: center; color: var(--text-2); }
+.empty-state h3 { color: var(--text-0); margin-bottom: 8px; }
+.site-footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 26px clamp(16px,4vw,40px); text-align: center; color: var(--text-2); font-size: .8rem; }
+
+/* Game view */
+.game-shell { position: relative; z-index: 1; height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+.game-frame-wrap { position: relative; flex: 1 1 auto; margin: 0; padding: 0; background: #12100d; overflow: hidden; }
+#gameFrame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.frame-loading {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; background: var(--cream-0); color: var(--text-2); font-family: var(--font-mono); font-size: .8rem;
+  letter-spacing: .04em; transition: opacity .35s; z-index: 2;
+}
+.frame-loading.hidden { opacity: 0; pointer-events: none; }
+.spinner { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--border); border-top-color: var(--caramel-2); animation: spin .9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.frame-fallback {
+  position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; background: var(--cream-0); text-align: center; padding: 24px; z-index: 3;
+}
+.frame-fallback.visible { display: flex; }
+.frame-fallback p { max-width: 36ch; }
+.game-shell:fullscreen .site-header, .game-shell.is-fullscreen .site-header { position: absolute; top: 0; left: 0; right: 0; z-index: 5; }
+
+[hidden] { display: none !important; }
+
+@media (max-width: 720px) {
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .card-thumb { font-size: 2rem; }
+  .controls { flex-direction: column; align-items: stretch; }
+  .search-wrap { max-width: none; }
+  .game-title-block .kicker { display: none; }
+}
+@media (max-width: 480px) {
+  .site-header { padding: 0 14px; }
+  .brand span.brand-text { display: none; }
+  .btn span.btn-label { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="aurora" aria-hidden="true"></div>
+
+<!-- ================= HOME VIEW ================= -->
+<div id="homeView">
+  <header class="site-header">
+    <div class="header-left">
+      <div class="brand"><span class="brand-mark">🎮</span><span class="brand-text">Adil Games</span></div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow"><span class="eyebrow-dot"></span> 19 games · zero installs</span>
+
+      <div class="hero-canvas-wrap" id="heroCanvasWrap">
+        <canvas id="titleCanvas" aria-label="Adil Games"></canvas>
+        <h1 class="hero-title-fallback">Adil Games</h1>
+      </div>
+
+      <p class="lead">A hand-picked arcade of free HTML5 games that run straight in your browser. Pick a category, search a title, and jump in.</p>
+    </section>
+
+    <div class="controls">
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search games…" autocomplete="off" />
+      </div>
+      <div class="filters" id="filterChips"></div>
+    </div>
+
+    <p class="results-meta" id="resultsMeta"></p>
+    <div class="grid" id="gamesGrid"></div>
+    <div class="empty-state" id="emptyState" hidden>
+      <h3>No games match your search</h3>
+      <p>Try a different keyword or clear the filters.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">Adil Games — built for fast, clean, in-browser play.</footer>
+</div>
+
+<!-- ================= GAME VIEW ================= -->
+<div id="gameView" class="game-shell" hidden>
+  <header class="site-header">
+    <div class="header-left">
+      <button class="btn btn-icon" id="homeBtnIcon" aria-label="Home" title="Home">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </button>
+      <div class="game-title-block">
+        <div class="kicker" id="gameKicker">Adil Games</div>
+        <h1 id="gameTitle">Loading…</h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn" id="homeBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span class="btn-label">Home</span>
+      </button>
+      <a class="btn" id="newTabBtn" target="_blank" rel="noopener noreferrer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="btn-label">New tab</span>
+      </a>
+      <button class="btn btn-primary" id="fullscreenBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        <span class="btn-label">Fullscreen</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="game-frame-wrap">
+    <div class="frame-loading" id="frameLoading">
+      <div class="spinner"></div>
+      <span>Loading game…</span>
+    </div>
+    <div class="frame-fallback" id="frameFallback">
+      <h3 style="font-family:var(--font-display); color:var(--text-0);">This game won't load here</h3>
+      <p>The source site is blocking embedding (a security setting called X-Frame-Options). Open it directly instead — no browser can work around that from inside the page.</p>
+      <a class="btn btn-primary" id="fallbackOpenBtn" target="_blank" rel="noopener noreferrer">Open game in a new tab</a>
+    </div>
+    <iframe id="gameFrame" title="Game" allow="fullscreen; gamepad; autoplay; clipboard-write" allowfullscreen referrerpolicy="no-referrer-when-downgrade" loading="eager"></iframe>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     3D BUBBLE TITLE — two techniques combined:
+     1) Canvas 2D text rasterization -> pixel sampling (finds the
+        letterforms of "Adil Games" using the actual web font).
+     2) WebGL (Three.js) instanced glossy spheres placed at those
+        sample points, lit with warm caramel + cool rim lights,
+        floating and slowly rotating for a "bubble text" look.
+     Falls back to a styled CSS heading if WebGL is unavailable.
+     ========================================================= */
+  function initBubbleTitle() {
+    const wrap = document.getElementById("heroCanvasWrap");
+    const canvas = document.getElementById("titleCanvas");
+
+    let gl;
+    try {
+      gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    } catch (e) { gl = null; }
+
+    if (!gl || typeof THREE === "undefined") {
+      wrap.classList.add("webgl-unavailable");
+      return;
+    }
+
+    // ---- Step 1: rasterize "Adil Games" on a 2D canvas to sample points ----
+    const SAMPLE_W = 900, SAMPLE_H = 260;
+    const off = document.createElement("canvas");
+    off.width = SAMPLE_W; off.height = SAMPLE_H;
+    const ctx = off.getContext("2d");
+    ctx.clearRect(0, 0, SAMPLE_W, SAMPLE_H);
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "800 150px 'Baloo 2', 'Segoe UI', sans-serif";
+    ctx.fillText("Adil Games", SAMPLE_W / 2, SAMPLE_H / 2 + 8);
+
+    const img = ctx.getImageData(0, 0, SAMPLE_W, SAMPLE_H).data;
+    const step = 4; // sampling grid density
+    const points = [];
+    for (let y = 0; y < SAMPLE_H; y += step) {
+      for (let x = 0; x < SAMPLE_W; x += step) {
+        const alpha = img[(y * SAMPLE_W + x) * 4 + 3];
+        if (alpha > 120) {
+          points.push({
+            x: (x - SAMPLE_W / 2) / 32,
+            y: -(y - SAMPLE_H / 2) / 32,
+          });
+        }
+      }
+    }
+
+    // ---- Step 2: WebGL scene of glossy caramel/cream/white bubbles ----
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 0, 16);
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    // Lights: warm caramel key light, cool white rim light, soft ambient.
+    scene.add(new THREE.AmbientLight(0xfff3e2, 0.55));
+    const key = new THREE.DirectionalLight(0xffb066, 1.1);
+    key.position.set(5, 6, 8);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.9);
+    rim.position.set(-6, -3, 5);
+    scene.add(rim);
+    const fill = new THREE.PointLight(0xffe6c2, 0.6, 40);
+    fill.position.set(0, -4, 10);
+    scene.add(fill);
+
+    const group = new THREE.Group();
+    scene.add(group);
+
+    const sphereGeo = new THREE.SphereGeometry(0.62, 20, 20);
+    const bubbleData = [];
+
+    // Color ramp across the word: caramel -> warm cream -> white -> caramel
+    const colorA = new THREE.Color(0xC68642); // caramel
+    const colorB = new THREE.Color(0xF5E6D0); // cream
+    const colorC = new THREE.Color(0xFFFFFF); // white
+
+    points.forEach(function (p, i) {
+      const t = (p.x + SAMPLE_W / 64) / (SAMPLE_W / 32);
+      let color;
+      if (t < 0.5) color = colorA.clone().lerp(colorB, t * 2);
+      else color = colorB.clone().lerp(colorC, (t - 0.5) * 2);
+
+      const mat = new THREE.MeshPhysicalMaterial({
+        color: color,
+        roughness: 0.25,
+        metalness: 0.05,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
+        reflectivity: 0.6,
+      });
+
+      const mesh = new THREE.Mesh(sphereGeo, mat);
+      const z = (Math.random() - 0.5) * 1.4;
+      mesh.position.set(p.x, p.y, z);
+      const s = 0.55 + Math.random() * 0.5;
+      mesh.scale.setScalar(s);
+      group.add(mesh);
+
+      bubbleData.push({
+        mesh: mesh,
+        baseY: p.y,
+        baseZ: z,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.6 + Math.random() * 0.8,
+      });
+    });
+
+    // Background ambient bubbles for depth (soft, blurred by distance/scale)
+    const bgGeo = new THREE.SphereGeometry(1, 12, 12);
+    const bgGroup = new THREE.Group();
+    for (let i = 0; i < 22; i++) {
+      const mat = new THREE.MeshPhysicalMaterial({
+        color: (i % 2 === 0) ? colorA.clone().lerp(colorC, 0.6) : colorB,
+        roughness: 0.5,
+        transparent: true,
+        opacity: 0.22,
+      });
+      const m = new THREE.Mesh(bgGeo, mat);
+      m.position.set((Math.random() - 0.5) * 26, (Math.random() - 0.5) * 10, -6 - Math.random() * 8);
+      m.scale.setScalar(0.4 + Math.random() * 1.2);
+      bgGroup.add(m);
+    }
+    scene.add(bgGroup);
+
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let mouseX = 0, mouseY = 0;
+    wrap.addEventListener("pointermove", function (e) {
+      const r = wrap.getBoundingClientRect();
+      mouseX = ((e.clientX - r.left) / r.width) * 2 - 1;
+      mouseY = ((e.clientY - r.top) / r.height) * 2 - 1;
+    });
+
+    function resize() {
+      const w = wrap.clientWidth, h = wrap.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const clock = new THREE.Clock();
+    let rafId;
+
+    function animate() {
+      rafId = requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+
+      if (!reduceMotion) {
+        bubbleData.forEach(function (b) {
+          b.mesh.position.y = b.baseY + Math.sin(t * b.speed + b.phase) * 0.06;
+          b.mesh.position.z = b.baseZ + Math.cos(t * b.speed * 0.7 + b.phase) * 0.15;
+        });
+        group.rotation.y = Math.sin(t * 0.18) * 0.18 + mouseX * 0.15;
+        group.rotation.x = Math.cos(t * 0.15) * 0.06 - mouseY * 0.08;
+        bgGroup.rotation.y = t * 0.02;
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) cancelAnimationFrame(rafId);
+      else animate();
+    });
+  }
+
+  /* ---------- Data ---------- */
+  const IFRAME_BASE_URL = "https://sites.google.com/view/";
+
+  const GAMES = [
+    { slug:"soccer-dash",        title:"Soccer Dash",      category:"Sports",     icon:"⚽", from:"#C68642", to:"#F5E6D0", path:"html5gamesunblocked/soccer-dash?authuser=0" },
+    { slug:"survival-race",      title:"Survival Race",    category:"Racing",     icon:"🏎️", from:"#A9662F", to:"#E8C39E", path:"html5gamesunblocked/survival-race?authuser=0" },
+    { slug:"vex-6",              title:"Vex 6",             category:"Platformer", icon:"🏃", from:"#C68642", to:"#7A4A24", path:"html5gamesunblocked/vex-6?authuser=0" },
+    { slug:"1v1-lol",            title:"1v1.LOL",           category:"Shooter",    icon:"🔫", from:"#A9662F", to:"#F5E6D0", path:"html5gamesunblocked/1v1-lol?authuser=0" },
+    { slug:"doodle-dunk",        title:"Doodle Dunk",       category:"Sports",     icon:"🏀", from:"#E8C39E", to:"#C68642", path:"html5gamesunblocked/doodle-dunk?authuser=0" },
+    { slug:"curvy-punch-3d_1",   title:"Curvy Punch 3D",    category:"Action",     icon:"🥊", from:"#7A4A24", to:"#C68642", path:"html5gamesunblocked/curvy-punch-3d_1?authuser=0" },
+    { slug:"light-it-up",        title:"Light It Up",       category:"Puzzle",     icon:"💡", from:"#F5E6D0", to:"#A9662F", path:"html5gamesunblocked/light-it-up?authuser=0" },
+    { slug:"drunken-duel",       title:"Drunken Duel",      category:"Action",     icon:"⚔️", from:"#C68642", to:"#7A4A24", path:"html5gamesunblocked/drunken-duel?authuser=0" },
+    { slug:"ragdoll-gangs",      title:"Ragdoll Gangs",     category:"Action",     icon:"🤼", from:"#A9662F", to:"#E8C39E", path:"html5gamesunblocked/ragdoll-gangs?authuser=0" },
+    { slug:"disk-io",            title:"Disk.io",           category:"IO",         icon:"💿", from:"#7A4A24", to:"#F5E6D0", path:"html5gamesunblocked/disk-io?authuser=0" },
+    { slug:"volley-beans",       title:"Volley Beans",      category:"Sports",     icon:"🏐", from:"#E8C39E", to:"#7A4A24", path:"html5gamesunblocked/volley-beans?authuser=0" },
+    { slug:"two-tunnel-3d",      title:"Two Tunnel 3D",     category:"Arcade",     icon:"🌀", from:"#C68642", to:"#A9662F", path:"html5gamesunblocked/two-tunnel-3d?authuser=0" },
+    { slug:"endless-run",        title:"Endless Run",       category:"Runner",     icon:"🏃‍♂️", from:"#A9662F", to:"#C68642", path:"html5gamesunblocked/endless-run?authuser=0" },
+    { slug:"paper-io-2",         title:"Paper.io 2",        category:"IO",         icon:"📄", from:"#7A4A24", to:"#E8C39E", path:"html5gamesunblocked/paper-io-2?authuser=0" },
+    { slug:"getting-over-it-2",  title:"Getting Over It 2", category:"Platformer", icon:"⛰️", from:"#F5E6D0", to:"#7A4A24", path:"html5gamesunblocked/getting-over-it-2?authuser=0" },
+    { slug:"slope",              title:"Slope",             category:"Arcade",     icon:"🎢", from:"#C68642", to:"#F5E6D0", path:"html5gamesunblocked/slope?authuser=0" },
+    { slug:"run-3-html5",        title:"Run 3",             category:"Runner",     icon:"🚀", from:"#A9662F", to:"#7A4A24", path:"html5gamesunblocked/run-3-html5?authuser=0" },
+    { slug:"happy-wheels-html5", title:"Happy Wheels",      category:"Action",     icon:"🎡", from:"#7A4A24", to:"#C68642", path:"html5gamesunblocked/happy-wheels-html5?authuser=0" },
+    { slug:"jetpack-joyride",    title:"Jetpack Joyride",   category:"Arcade",     icon:"🚁", from:"#C68642", to:"#A9662F", path:"html5gamesunblocked/jetpack-joyride?authuser=0" }
+  ];
+
+  function getGameBySlug(slug) { return GAMES.find(function (g) { return g.slug === slug; }) || null; }
+  function resolveSrc(game) { return IFRAME_BASE_URL + game.path; }
+  function escapeHtml(str) { const d = document.createElement("div"); d.textContent = str; return d.innerHTML; }
+
+  /* ---------- Elements ---------- */
+  const homeView = document.getElementById("homeView");
+  const gameView = document.getElementById("gameView");
+  const grid = document.getElementById("gamesGrid");
+  const searchInput = document.getElementById("searchInput");
+  const filterChipsEl = document.getElementById("filterChips");
+  const resultsMeta = document.getElementById("resultsMeta");
+  const emptyState = document.getElementById("emptyState");
+
+  const frame = document.getElementById("gameFrame");
+  const loadingEl = document.getElementById("frameLoading");
+  const fallbackEl = document.getElementById("frameFallback");
+  const fallbackOpenBtn = document.getElementById("fallbackOpenBtn");
+  const gameTitleEl = document.getElementById("gameTitle");
+  const gameKickerEl = document.getElementById("gameKicker");
+  const newTabBtn = document.getElementById("newTabBtn");
+  const fullscreenBtn = document.getElementById("fullscreenBtn");
+
+  /* ---------- Home: render + filters ---------- */
+  const categories = ["All"].concat(Array.from(new Set(GAMES.map(function (g) { return g.category; }))).sort());
+  let activeCategory = "All";
+  let query = "";
+
+  function cardTemplate(game) {
+    return (
+      '<button class="card" data-slug="' + game.slug + '">' +
+        '<div class="card-thumb" style="background:linear-gradient(135deg,' + game.from + '40,' + game.to + '40);">' +
+          '<span class="card-category">' + escapeHtml(game.category) + '</span>' +
+          '<span class="emoji">' + game.icon + '</span>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<span class="card-title">' + escapeHtml(game.title) + '</span>' +
+          '<span class="card-play" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>' +
+        '</div>' +
+      '</button>'
+    );
+  }
+
+  function renderChips() {
+    filterChipsEl.innerHTML = categories.map(function (cat) {
+      return '<button class="chip' + (cat === activeCategory ? " active" : "") + '" data-cat="' + escapeHtml(cat) + '">' + escapeHtml(cat) + '</button>';
+    }).join("");
+    filterChipsEl.querySelectorAll(".chip").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        activeCategory = btn.getAttribute("data-cat");
+        renderChips();
+        renderGrid();
+      });
+    });
+  }
+
+  function renderGrid() {
+    const q = query.trim().toLowerCase();
+    const filtered = GAMES.filter(function (g) {
+      const matchesCategory = activeCategory === "All" || g.category === activeCategory;
+      const matchesQuery = !q || g.title.toLowerCase().indexOf(q) !== -1 || g.category.toLowerCase().indexOf(q) !== -1;
+      return matchesCategory && matchesQuery;
+    });
+    grid.innerHTML = filtered.map(cardTemplate).join("");
+    resultsMeta.textContent = filtered.length + (filtered.length === 1 ? " game" : " games") + (activeCategory !== "All" ? " · " + activeCategory : "");
+    emptyState.hidden = filtered.length !== 0;
+    grid.style.display = filtered.length === 0 ? "none" : "grid";
+    grid.querySelectorAll(".card").forEach(function (card) {
+      card.addEventListener("click", function () {
+        window.location.hash = "game=" + card.getAttribute("data-slug");
+      });
+    });
+  }
+
+  searchInput.addEventListener("input", function (e) { query = e.target.value; renderGrid(); });
+
+  /* ---------- Game view ---------- */
+  let loadTimer = null;
+
+  function showFallback() {
+    loadingEl.classList.add("hidden");
+    fallbackEl.classList.add("visible");
+  }
+
+  function openGame(slug) {
+    const game = getGameBySlug(slug);
+    fallbackEl.classList.remove("visible");
+    loadingEl.classList.remove("hidden");
+
+    if (!game) {
+      gameTitleEl.textContent = "Game not found";
+      gameKickerEl.textContent = "Adil Games";
+      document.title = "Game not found — Adil Games";
+      frame.removeAttribute("src");
+      showFallback();
+      fallbackOpenBtn.style.display = "none";
+      return;
+    }
+
+    fallbackOpenBtn.style.display = "";
+    const src = resolveSrc(game);
+    gameTitleEl.textContent = game.title;
+    gameKickerEl.textContent = game.category;
+    document.title = game.title + " — Adil Games";
+    newTabBtn.href = src;
+    fallbackOpenBtn.href = src;
+
+    if (loadTimer) clearTimeout(loadTimer);
+
+    frame.onload = function () {
+      loadingEl.classList.add("hidden");
+      try {
+        const doc = frame.contentDocument;
+        if (doc && doc.body && doc.body.innerHTML.trim() === "") {
+          showFallback();
+        }
+      } catch (err) {
+        // Cross-origin content threw — normal, successful case.
+      }
+    };
+    frame.onerror = showFallback;
+
+    loadTimer = setTimeout(function () {
+      if (!loadingEl.classList.contains("hidden")) showFallback();
+    }, 9000);
+
+    frame.src = src;
+  }
+
+  /* ---------- Fullscreen ---------- */
+  function isFullscreen() { return !!(document.fullscreenElement || document.webkitFullscreenElement); }
+  function enterFullscreen(el) { if (el.requestFullscreen) return el.requestFullscreen(); if (el.webkitRequestFullscreen) return el.webkitRequestFullscreen(); return Promise.reject(); }
+  function exitFullscreen() { if (document.exitFullscreen) return document.exitFullscreen(); if (document.webkitExitFullscreen) return document.webkitExitFullscreen(); return Promise.reject(); }
+  function updateFullscreenUI() {
+    const active = isFullscreen();
+    gameView.classList.toggle("is-fullscreen", active);
+    fullscreenBtn.querySelector(".btn-label").textContent = active ? "Exit fullscreen" : "Fullscreen";
+  }
+  fullscreenBtn.addEventListener("click", function () {
+    if (isFullscreen()) { exitFullscreen().catch(function(){}); }
+    else { enterFullscreen(gameView).catch(function () { gameView.classList.toggle("is-fullscreen"); }); }
+  });
+  document.addEventListener("fullscreenchange", updateFullscreenUI);
+  document.addEventListener("webkitfullscreenchange", updateFullscreenUI);
+
+  document.getElementById("homeBtn").addEventListener("click", function () { window.location.hash = ""; });
+  document.getElementById("homeBtnIcon").addEventListener("click", function () { window.location.hash = ""; });
+
+  /* ---------- Router ---------- */
+  function route() {
+    const hash = window.location.hash.replace(/^#/, "");
+    const params = new URLSearchParams(hash);
+    const slug = params.get("game");
+
+    if (slug) {
+      homeView.hidden = true;
+      gameView.hidden = false;
+      openGame(slug);
+    } else {
+      gameView.hidden = true;
+      homeView.hidden = false;
+      document.title = "Adil Games — Play Free HTML5 Games";
+    }
+  }
+
+  window.addEventListener("hashchange", route);
+
+  renderChips();
+  renderGrid();
+  route();
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(initBubbleTitle);
+  } else {
+    initBubbleTitle();
+  }
+})();
+</script>
+</body>
+</html>
