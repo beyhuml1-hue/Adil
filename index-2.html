@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alim's World</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0a0e1a; --deep:#070b14;
+  --accent:#6c3bff; --accent-light:#9b6dff;
+  --gold:#ffd700; --gold-dim:#c9a800;
+  --card:#131929; --card2:#1a2035;
+  --text:#e8eaf0; --muted:#8892a4;
+  --green:#00e676; --red:#ff3d57; --cyan:#00d4ff;
+  --top-h:60px;
+  --side-w:220px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{background:var(--navy);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;}
+
+/* ===== TOP NAV ===== */
+nav.topnav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  background:rgba(7,11,20,0.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(108,59,255,0.25);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;height:var(--top-h);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.nav-logo-img{width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);object-fit:cover;box-shadow:0 0 10px var(--accent);}
+.nav-logo-text{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--gold);letter-spacing:2px;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.rebirth-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.35);
+  padding:5px 12px;border-radius:20px;
+}
+.rebirth-pill-val{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--cyan);}
+.aura-pill{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.35);
+  padding:5px 12px;border-radius:20px;
+}
+.aura-pill-val{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--gold);}
+.aura-pill-lbl{font-size:10px;color:var(--gold-dim);text-transform:uppercase;letter-spacing:1px;}
+
+/* ===== SIDEBAR (desktop) ===== */
+.sidebar{
+  position:fixed;top:var(--top-h);left:0;bottom:0;width:var(--side-w);z-index:850;
+  background:rgba(7,11,20,0.97);border-right:1px solid rgba(108,59,255,0.2);
+  display:flex;flex-direction:column;padding:18px 12px;gap:4px;overflow-y:auto;
+}
+.side-btn{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;
+  background:none;border:none;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;
+  font-size:14px;font-weight:600;text-align:left;transition:all .2s;width:100%;
+}
+.side-btn .sicon{font-size:19px;width:22px;text-align:center;}
+.side-btn:hover{background:rgba(108,59,255,.1);color:var(--text);}
+.side-btn.active{background:rgba(108,59,255,.18);color:var(--gold);border:1px solid rgba(108,59,255,.3);}
+.side-divider{height:1px;background:rgba(255,255,255,.07);margin:10px 6px;}
+.side-footer{margin-top:auto;font-size:10px;color:var(--muted);padding:10px 14px;line-height:1.6;}
+
+/* ===== BOTTOM NAV (mobile only) ===== */
+.bottom-nav{display:none;}
+
+/* ===== MAIN LAYOUT ===== */
+.main-wrap{margin-left:var(--side-w);padding-top:var(--top-h);min-height:100vh;}
+.page{display:none;min-height:calc(100vh - var(--top-h));}
+.page.active{display:block;}
+
+@media(max-width:860px){
+  .sidebar{display:none;}
+  .main-wrap{margin-left:0;padding-bottom:64px;}
+  .bottom-nav{
+    display:flex;position:fixed;bottom:0;left:0;right:0;z-index:900;height:64px;
+    background:rgba(7,11,20,0.97);backdrop-filter:blur(16px);
+    border-top:1px solid rgba(108,59,255,0.25);
+  }
+  .bnav-btn{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;background:none;border:none;cursor:pointer;
+    color:var(--muted);font-size:9px;font-family:'Inter',sans-serif;font-weight:600;
+    letter-spacing:.3px;text-transform:uppercase;
+  }
+  .bnav-btn .bicon{font-size:20px;}
+  .bnav-btn.active{color:var(--gold);}
+}
+
+/* ===== FOOD RAIN ===== */
+.food-rain{position:fixed;inset:0;pointer-events:none;z-index:10;overflow:hidden;}
+.food-drop{position:absolute;top:-60px;font-size:26px;animation:foodFall linear infinite;will-change:transform;}
+@keyframes foodFall{0%{transform:translateY(-60px) rotate(0deg);opacity:.8;}80%{opacity:.8;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+
+/* ===== HOME ===== */
+#home{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;min-height:calc(100vh - var(--top-h));
+  background:radial-gradient(ellipse 90% 55% at 50% 40%,rgba(108,59,255,0.2) 0%,transparent 70%),
+             radial-gradient(ellipse 60% 40% at 50% 85%,rgba(0,212,255,0.08) 0%,transparent 60%),
+             var(--navy);
+  position:relative;overflow:hidden;padding:40px 16px;
+}
+#home.active{display:flex;}
+.home-orbs{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.15;animation:floatOrb 8s ease-in-out infinite;}
+.orb1{width:300px;height:300px;background:var(--accent);top:-80px;right:-80px;}
+.orb2{width:240px;height:240px;background:var(--cyan);bottom:-40px;left:-60px;animation-delay:2s;}
+.orb3{width:180px;height:180px;background:var(--gold);bottom:80px;right:5%;animation-delay:4s;}
+@keyframes floatOrb{0%,100%{transform:translateY(0);}50%{transform:translateY(-24px);}}
+
+.hero-photo-wrap{position:relative;display:inline-block;margin-bottom:24px;}
+.hero-glow{position:absolute;inset:-36px;border-radius:50%;background:radial-gradient(circle,rgba(108,59,255,.4) 0%,transparent 70%);animation:pulse 2.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.7;transform:scale(1);}50%{opacity:1;transform:scale(1.08);}}
+.hero-ring{position:absolute;inset:-10px;border-radius:50%;border:3px solid transparent;background:linear-gradient(135deg,var(--accent),var(--cyan),var(--gold)) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;animation:spin 6s linear infinite;}
+.hero-ring2{position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(108,59,255,.3);animation:spin 12s linear infinite reverse;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.hero-photo{width:clamp(140px,20vw,180px);height:clamp(140px,20vw,180px);border-radius:50%;object-fit:cover;position:relative;z-index:2;box-shadow:0 0 50px rgba(108,59,255,.5),0 0 100px rgba(108,59,255,.2);}
+.crown{position:absolute;top:-26px;left:50%;transform:translateX(-50%);font-size:32px;z-index:3;filter:drop-shadow(0 0 8px #ffd700);}
+
+.hero-name{font-family:'Orbitron',sans-serif;font-size:clamp(40px,8vw,72px);font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#fff 0%,var(--accent-light) 40%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+.hero-sub{font-size:13px;color:var(--muted);letter-spacing:5px;text-transform:uppercase;margin-bottom:28px;font-weight:300;}
+.hero-sub span{color:var(--accent-light);}
+
+.play-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--accent),#9b3bff);
+  color:#fff;border:none;padding:15px 34px;border-radius:50px;
+  font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;
+  letter-spacing:2px;cursor:pointer;
+  box-shadow:0 8px 28px rgba(108,59,255,.5),0 0 0 1px rgba(255,255,255,.1) inset;
+  transition:all .2s;
+}
+.play-btn:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(108,59,255,.6);}
+.play-btn:active{transform:scale(.96);}
+
+.hero-stats{display:flex;gap:0;margin-top:32px;border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.03);}
+.hero-stat{flex:1;padding:16px 20px;text-align:center;min-width:90px;}
+.hero-stat+.hero-stat{border-left:1px solid rgba(255,255,255,.07);}
+.hero-stat-val{font-family:'Orbitron',sans-serif;font-size:clamp(16px,3vw,22px);font-weight:700;color:var(--gold);}
+.hero-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:3px;}
+
+/* ===== PAGE HEADER ===== */
+.page-header{background:linear-gradient(180deg,rgba(108,59,255,.15) 0%,transparent 100%);padding:28px 32px 22px;border-bottom:1px solid rgba(108,59,255,.15);}
+.page-title{font-family:'Orbitron',sans-serif;font-size:clamp(22px,3vw,28px);font-weight:900;color:var(--text);}
+.page-title span{color:var(--accent-light);}
+.page-sub{color:var(--muted);font-size:13px;margin-top:5px;line-height:1.5;max-width:640px;}
+.aura-ticker{display:inline-flex;align-items:center;gap:7px;background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.3);padding:5px 12px;border-radius:20px;margin-top:10px;}
+.aura-ticker-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink .8s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.aura-ticker-text{font-size:12px;color:var(--green);font-weight:600;}
+
+.content-wrap{padding:24px 32px 60px;max-width:1200px;}
+
+/* ===== REBIRTH PAGE ===== */
+.rebirth-hero{
+  background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(108,59,255,.08));
+  border:1px solid rgba(0,212,255,.25);border-radius:18px;padding:26px;margin-bottom:20px;
+  display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;
+}
+.rebirth-info h2{font-family:'Orbitron',sans-serif;font-size:20px;color:var(--cyan);margin-bottom:6px;}
+.rebirth-info p{font-size:13px;color:var(--muted);max-width:480px;line-height:1.6;}
+.rebirth-req{font-size:12px;color:var(--text);margin-top:10px;}
+.rebirth-req strong{color:var(--gold);}
+.rebirth-action{text-align:center;}
+.rebirth-btn{
+  background:linear-gradient(135deg,var(--cyan),#0090c9);color:#00121a;border:none;
+  padding:16px 32px;border-radius:14px;font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:15px;cursor:pointer;letter-spacing:1px;box-shadow:0 8px 24px rgba(0,212,255,.35);
+  transition:all .2s;
+}
+.rebirth-btn:hover:not(:disabled){transform:translateY(-2px);}
+.rebirth-btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(.6);}
+.rebirth-mult{font-size:11px;color:var(--muted);margin-top:8px;}
+
+.section-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;margin:26px 0 14px;color:var(--text);display:flex;align-items:center;gap:8px;}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.prestige-card{background:var(--card);border:1px solid rgba(0,212,255,.15);border-radius:14px;padding:16px;transition:all .2s;}
+.prestige-card.disabled{opacity:.5;}
+.prestige-card-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.prestige-icon{font-size:28px;}
+.prestige-name{font-weight:700;font-size:14px;}
+.prestige-desc{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+.prestige-owned{font-size:11px;color:var(--cyan);font-weight:600;margin-bottom:10px;}
+.prestige-buy{width:100%;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--cyan),#0090c9);color:#00121a;font-weight:700;font-size:12px;cursor:pointer;}
+.prestige-buy:disabled{opacity:.35;cursor:not-allowed;background:var(--muted);}
+
+.stats-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:8px;}
+.stat-box{background:var(--card);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;text-align:center;}
+.stat-box-val{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;color:var(--gold);}
+.stat-box-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+
+/* ===== GAMBLE / CASINO TABS ===== */
+#gamble{background:var(--deep);}
+.gamble-warning{
+  margin:0 32px 20px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,215,0,.08),rgba(255,61,87,.08));
+  border:1px solid rgba(255,215,0,.25);
+  padding:14px 16px;display:flex;gap:12px;align-items:flex-start;
+}
+.warning-icon{font-size:26px;flex-shrink:0;margin-top:2px;}
+.warning-text h3{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:4px;}
+.warning-text p{font-size:12px;color:var(--muted);line-height:1.55;}
+.warning-text p strong{color:var(--text);}
+
+.casino-tabs{display:flex;flex-wrap:wrap;gap:8px;padding:0 32px;margin-bottom:20px;}
+.casino-tab{
+  padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+  background:var(--card);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;
+  display:flex;align-items:center;gap:7px;transition:all .15s;white-space:nowrap;
+}
+.casino-tab:hover{color:var(--text);border-color:rgba(108,59,255,.3);}
+.casino-tab.active{background:linear-gradient(135deg,rgba(108,59,255,.25),rgba(108,59,255,.1));color:var(--gold);border-color:var(--accent);}
+.casino-panels{padding:0 32px 40px;}
+.casino-panel{display:none;}
+.casino-panel.active{display:block;}
+
+.gamble-card{background:var(--card);border:1px solid rgba(255,215,0,.12);border-radius:18px;padding:24px;position:relative;overflow:hidden;max-width:560px;}
+.gamble-card::before{content:'';position:absolute;top:-50px;right:-50px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(255,215,0,.07),transparent 70%);}
+.gamble-title{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px;}
+.gamble-sub{font-size:12px;color:var(--muted);margin-bottom:14px;}
+.odds-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(108,59,255,.2);color:var(--accent-light);border:1px solid rgba(108,59,255,.3);margin-bottom:12px;}
+.gamble-input-row{display:flex;gap:8px;margin-bottom:12px;}
+.gamble-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;color:var(--text);font-size:15px;font-family:'Orbitron',sans-serif;outline:none;min-width:0;}
+.gamble-input:focus{border-color:var(--gold);}
+.gamble-bet-btn{padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;font-size:13px;background:linear-gradient(135deg,var(--gold),#e6c000);color:#000;white-space:nowrap;}
+.gamble-bet-btn:active{transform:scale(.96);}
+.quick-bet-row{display:flex;gap:6px;margin-bottom:12px;}
+.quick-bet{padding:6px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted);font-size:11px;cursor:pointer;font-weight:600;}
+.quick-bet:hover{border-color:var(--gold);color:var(--gold);}
+.gamble-result{min-height:44px;background:rgba(255,255,255,.04);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:7px;line-height:1.4;}
+.gamble-result.win{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3);}
+.gamble-result.lose{background:rgba(255,61,87,.1);color:var(--red);border:1px solid rgba(255,61,87,.3);}
+.coin-choice-row{display:flex;gap:8px;margin-bottom:12px;}
+.coin-choice{flex:1;padding:9px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.04);color:var(--text);font-weight:600;cursor:pointer;text-align:center;font-size:13px;}
+.coin-choice.selected{background:rgba(108,59,255,.25);border-color:var(--accent);}
+.coin-display{display:flex;justify-content:center;margin:10px 0;}
+.coin{width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:38px;background:linear-gradient(135deg,var(--gold),#c9a800);box-shadow:0 4px 18px rgba(255,215,0,.4);}
+.coin.flipping{animation:coinflip .09s linear infinite;}
+@keyframes coinflip{0%{transform:rotateY(0);}50%{transform:rotateY(90deg);}100%{transform:rotateY(0);}}
+.slots-display{display:flex;gap:6px;justify-content:center;margin:10px 0;}
+.slot-reel{width:54px;height:62px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.slot-reel.spinning{animation:reel .09s linear infinite;}
+@keyframes reel{0%{transform:scaleY(1);}50%{transform:scaleY(.8);}100%{transform:scaleY(1);}}
+.dice-display{display:flex;gap:14px;justify-content:center;margin:10px 0;}
+.die{width:56px;height:56px;background:linear-gradient(135deg,#fff,#ddd);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:30px;color:#222;box-shadow:2px 4px 10px rgba(0,0,0,.5);}
+.die.rolling{animation:roll .1s linear infinite;}
+@keyframes roll{0%{transform:rotate(0);}25%{transform:rotate(15deg);}75%{transform:rotate(-15deg);}100%{transform:rotate(0);}}
+.roulette-result-block{font-size:40px;text-align:center;font-family:'Orbitron',sans-serif;height:64px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.04);border-radius:12px;margin:10px 0;border:1px solid rgba(255,255,255,.08);}
+.roulette-btn-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.roulette-choice{flex:1;min-width:60px;padding:8px 4px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.04);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;text-align:center;}
+.roulette-choice.selected{background:rgba(108,59,255,.25);border-color:var(--accent);}
+.mines-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px 0;max-width:340px;}
+.mine-cell{aspect-ratio:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;}
+.mine-cell:hover:not(.revealed){background:rgba(108,59,255,.2);}
+.mine-cell.revealed.safe{background:rgba(0,230,118,.15);border-color:rgba(0,230,118,.4);}
+.mine-cell.revealed.bomb{background:rgba(255,61,87,.2);border-color:rgba(255,61,87,.5);}
+.cashout-btn{width:100%;padding:10px;border-radius:10px;border:none;cursor:pointer;font-weight:700;font-size:13px;background:linear-gradient(135deg,#00b894,#00e676);color:#000;margin-bottom:8px;}
+.cashout-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* Blackjack */
+.bj-table{background:rgba(0,90,50,.15);border:1px solid rgba(0,230,118,.2);border-radius:14px;padding:16px;margin-bottom:12px;}
+.bj-row{margin-bottom:10px;}
+.bj-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.bj-cards{display:flex;gap:6px;flex-wrap:wrap;}
+.bj-card{width:44px;height:62px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#c0392b;box-shadow:1px 2px 6px rgba(0,0,0,.4);}
+.bj-card.black{color:#222;}
+.bj-total{font-size:12px;color:var(--gold);font-weight:700;margin-top:6px;}
+.bj-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.bj-action-btn{flex:1;min-width:90px;padding:10px;border-radius:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text);font-weight:700;font-size:12px;cursor:pointer;}
+.bj-action-btn:hover:not(:disabled){border-color:var(--accent);}
+.bj-action-btn:disabled{opacity:.3;cursor:not-allowed;}
+
+/* Crash */
+.crash-display{background:rgba(0,0,0,.3);border-radius:12px;height:140px;display:flex;align-items:center;justify-content:center;margin:10px 0;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08);}
+.crash-mult{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:var(--green);}
+.crash-mult.crashed{color:var(--red);}
+.crash-line{position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--green),transparent);}
+
+/* Plinko */
+.plinko-board{background:rgba(0,0,0,.25);border-radius:12px;padding:14px;margin:10px 0;border:1px solid rgba(255,255,255,.08);}
+.plinko-row{display:flex;justify-content:center;gap:8px;margin-bottom:8px;}
+.plinko-peg{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);}
+.plinko-slots{display:flex;gap:3px;justify-content:center;}
+.plinko-slot{flex:1;text-align:center;font-size:10px;font-weight:700;padding:5px 2px;border-radius:5px;background:rgba(108,59,255,.15);color:var(--accent-light);}
+.plinko-ball{width:12px;height:12px;border-radius:50%;background:var(--gold);margin:0 auto;box-shadow:0 0 8px var(--gold);}
+
+/* ===== CLICKER ===== */
+#clicker{background:var(--deep);}
+.clicker-layout{display:flex;gap:32px;flex-wrap:wrap;padding:24px 32px 60px;align-items:flex-start;}
+.clicker-main{flex:1;min-width:280px;display:flex;flex-direction:column;align-items:center;}
+.click-counter{font-family:'Orbitron',sans-serif;font-size:clamp(36px,6vw,56px);font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(255,215,0,.4);margin-bottom:4px;transition:transform .05s;}
+.click-counter.bump{transform:scale(1.07);}
+.cps-label{font-size:13px;color:var(--muted);margin-bottom:20px;text-align:center;}
+.milestone-bar{width:100%;max-width:320px;margin-bottom:24px;}
+.milestone-label{font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;}
+.milestone-track{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.milestone-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:width .3s;}
+.clicker-btn-wrap{position:relative;cursor:pointer;user-select:none;margin-bottom:16px;}
+.alim-click-btn{width:clamp(160px,20vw,220px);height:clamp(160px,20vw,220px);border-radius:50%;border:none;background:none;cursor:pointer;position:relative;outline:none;}
+.alim-click-btn:active{transform:scale(.93);}
+.alim-click-img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid var(--gold);box-shadow:0 0 36px rgba(255,215,0,.5),0 0 70px rgba(108,59,255,.3);pointer-events:none;}
+.click-ring{position:absolute;inset:-10px;border-radius:50%;border:3px solid rgba(255,215,0,.35);animation:clickPulse 2s ease-in-out infinite;}
+@keyframes clickPulse{0%,100%{transform:scale(1);opacity:.6;}50%{transform:scale(1.05);opacity:1;}}
+.click-particle{position:absolute;pointer-events:none;font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--gold);animation:floatUp .8s ease-out forwards;white-space:nowrap;}
+.click-particle.crit{color:var(--red);font-size:22px;}
+@keyframes floatUp{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-70px);opacity:0;}}
+.crit-hint{font-size:11px;color:var(--red);margin-bottom:20px;opacity:.8;}
+
+.shop-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;width:100%;max-width:460px;}
+.shop-tab{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;text-align:center;}
+.shop-tab.active{background:rgba(108,59,255,.25);border-color:var(--accent);color:var(--gold);}
+
+.shop-section{width:100%;max-width:460px;flex:1;min-width:300px;}
+.shop-title{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.07);}
+.shop-item{background:var(--card2);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:12px;margin-bottom:10px;cursor:pointer;transition:all .15s;display:flex;gap:12px;align-items:center;}
+.shop-item:hover:not(.disabled){border-color:var(--accent);}
+.shop-item.disabled{opacity:.4;cursor:not-allowed;}
+.shop-item-icon{font-size:26px;flex-shrink:0;}
+.shop-item-info{flex:1;min-width:0;}
+.shop-item-name{font-weight:700;font-size:13px;margin-bottom:2px;}
+.shop-item-desc{font-size:11px;color:var(--muted);}
+.shop-item-right{text-align:right;flex-shrink:0;}
+.shop-item-cost{font-family:'Orbitron',sans-serif;font-size:12px;color:var(--gold);font-weight:700;white-space:nowrap;}
+.shop-item-owned{font-size:11px;color:var(--accent-light);font-weight:600;margin-top:2px;}
+
+/* ===== QUESTS / DAILY / LEADERBOARD ===== */
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+.hub-card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;}
+.hub-card h3{font-family:'Orbitron',sans-serif;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.quest-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.quest-item:last-child{border-bottom:none;}
+.quest-icon{font-size:22px;flex-shrink:0;}
+.quest-info{flex:1;min-width:0;}
+.quest-name{font-size:13px;font-weight:600;}
+.quest-progress-track{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-top:6px;}
+.quest-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:3px;transition:width .3s;}
+.quest-reward{font-size:11px;color:var(--gold);font-weight:700;white-space:nowrap;}
+.quest-claim{padding:6px 12px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--green),#00b894);color:#00190f;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;}
+.quest-claim:disabled{opacity:.3;cursor:not-allowed;background:var(--muted);}
+
+.daily-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:14px;}
+.daily-day{aspect-ratio:1;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;gap:2px;}
+.daily-day.claimed{background:rgba(0,230,118,.12);border-color:rgba(0,230,118,.35);}
+.daily-day.today{border-color:var(--gold);box-shadow:0 0 10px rgba(255,215,0,.3);}
+.daily-day-num{color:var(--muted);font-size:9px;}
+.daily-day-reward{font-weight:700;color:var(--gold);}
+.daily-claim-btn{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--gold),#e6c000);color:#000;font-weight:900;font-size:13px;cursor:pointer;font-family:'Orbitron',sans-serif;}
+.daily-claim-btn:disabled{opacity:.35;cursor:not-allowed;background:var(--muted);}
+
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:10px;}
+.lb-row.you{background:rgba(108,59,255,.15);border:1px solid rgba(108,59,255,.3);}
+.lb-rank{font-family:'Orbitron',sans-serif;font-weight:900;width:28px;text-align:center;color:var(--muted);}
+.lb-rank.top1{color:var(--gold);}.lb-rank.top2{color:#c0c0c0;}.lb-rank.top3{color:#cd7f32;}
+.lb-name{flex:1;font-size:13px;font-weight:600;}
+.lb-val{font-family:'Orbitron',sans-serif;font-size:13px;color:var(--gold);font-weight:700;}
+
+/* ===== SETTINGS / THEME ===== */
+.theme-swatches{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:20px;}
+.swatch{width:52px;height:52px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .15s;position:relative;}
+.swatch:hover{transform:scale(1.08);}
+.swatch.selected{border-color:#fff;box-shadow:0 0 0 2px var(--navy),0 0 14px rgba(255,255,255,.4);}
+.custom-color-row{display:flex;align-items:center;gap:12px;margin-top:10px;}
+.custom-color-row input[type=color]{width:52px;height:40px;border:none;border-radius:10px;background:none;cursor:pointer;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.settings-row:last-child{border-bottom:none;}
+.settings-label{font-size:13px;font-weight:600;}
+.settings-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+.danger-btn{padding:9px 16px;border-radius:9px;border:1px solid rgba(255,61,87,.4);background:rgba(255,61,87,.1);color:var(--red);font-weight:700;font-size:12px;cursor:pointer;}
+
+/* ===== GAME MODAL (kept for potential future use, hidden) ===== */
+.game-modal{display:none;}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--card2);border:1px solid rgba(255,215,0,.4);border-radius:12px;padding:11px 20px;color:var(--gold);font-weight:700;font-size:13px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@media(max-width:860px){.toast{bottom:76px;}}
+
+@media(max-width:860px){
+  .page-header{padding:20px 16px 16px;}
+  .content-wrap{padding:18px 16px 40px;}
+  .casino-tabs{padding:0 16px;}
+  .casino-panels{padding:0 16px 40px;}
+  .gamble-warning{margin:0 16px 16px;}
+  .clicker-layout{padding:18px 16px 40px;}
+}
+</style>
+</head>
+<body>
+
+<!-- FOOD RAIN -->
+<div class="food-rain" id="food-rain"></div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="nav-logo" onclick="showPage('home')">
+    <img class="nav-logo-img" src="https://www.image2url.com/r2/default/images/1782975202412-fbe9d6f0-bc77-4135-ba1c-4ac185924a81.jpg" alt="Alim">
+    <span class="nav-logo-text">ALIM</span>
+  </div>
+  <div class="nav-right">
+    <div class="rebirth-pill" title="Rebirths">
+      <span>🔁</span>
+      <div class="rebirth-pill-val" id="nav-rebirths">0</div>
+    </div>
+    <div class="aura-pill">
+      <span>✨</span>
+      <div>
+        <div class="aura-pill-val" id="nav-aura">50</div>
+        <div class="aura-pill-lbl">Aura</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <button class="side-btn active" id="side-home" onclick="showPage('home')"><span class="sicon">🏠</span>Home</button>
+  <button class="side-btn" id="side-rebirth" onclick="showPage('rebirth')"><span class="sicon">🔁</span>Rebirth</button>
+  <button class="side-btn" id="side-clicker" onclick="showPage('clicker')"><span class="sicon">👆</span>Clicker</button>
+  <button class="side-btn" id="side-gamble" onclick="showPage('gamble')"><span class="sicon">🎰</span>Casino</button>
+  <div class="side-divider"></div>
+  <button class="side-btn" id="side-hub" onclick="showPage('hub')"><span class="sicon">🏆</span>Quests & Rewards</button>
+  <button class="side-btn" id="side-settings" onclick="showPage('settings')"><span class="sicon">🎨</span>Settings</button>
+  <div class="side-footer">Alim's World<br>All Aura is virtual — no real money.</div>
+</div>
+
+<div class="main-wrap">
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="home-orbs">
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+  </div>
+  <div style="position:relative;z-index:1;width:100%;max-width:440px;margin:0 auto;">
+    <div class="hero-photo-wrap">
+      <div class="hero-glow"></div>
+      <div class="hero-ring2"></div>
+      <div class="hero-ring"></div>
+      <div class="crown">👑</div>
+      <img class="hero-photo" src="https://www.image2url.com/r2/default/images/1782975202412-fbe9d6f0-bc77-4135-ba1c-4ac185924a81.jpg" alt="Alim">
+    </div>
+    <div class="hero-name">ALIM</div>
+    <div class="hero-sub">The <span>Legend</span> Has Arrived</div>
+    <button class="play-btn" onclick="showPage('clicker')">
+      <span style="font-size:18px;">👆</span> START CLICKING
+    </button>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="home-aura">50</div>
+        <div class="hero-stat-lbl">Aura</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="home-clicks">0</div>
+        <div class="hero-stat-lbl">Clicks</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val" id="home-rebirths">0</div>
+        <div class="hero-stat-lbl">Rebirths</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REBIRTH -->
+<div id="rebirth" class="page">
+  <div class="page-header">
+    <div class="page-title">Aura <span>Rebirth</span></div>
+    <div class="page-sub">Reset your Aura and clicker upgrades to earn permanent Essence multipliers. The grind gets faster every time.</div>
+  </div>
+  <div class="content-wrap">
+    <div class="stats-strip">
+      <div class="stat-box"><div class="stat-box-val" id="rb-current">0</div><div class="stat-box-lbl">Rebirths</div></div>
+      <div class="stat-box"><div class="stat-box-val" id="rb-essence">0</div><div class="stat-box-lbl">Essence</div></div>
+      <div class="stat-box"><div class="stat-box-val" id="rb-multiplier">×1.00</div><div class="stat-box-lbl">Aura Multiplier</div></div>
+      <div class="stat-box"><div class="stat-box-val" id="rb-lifetime">0</div><div class="stat-box-lbl">Lifetime Aura</div></div>
+    </div>
+
+    <div class="rebirth-hero">
+      <div class="rebirth-info">
+        <h2>🔁 Rebirth Now</h2>
+        <p>Resetting gives you <strong style="color:#fff">Essence</strong> based on lifetime Aura earned. Essence permanently boosts every Aura source and never resets. Your Casino balance is unaffected.</p>
+        <div class="rebirth-req">Requires <strong id="rb-req-amt">10,000</strong> lifetime Aura &nbsp;·&nbsp; You'll gain <strong id="rb-gain-amt">+0</strong> Essence</div>
+      </div>
+      <div class="rebirth-action">
+        <button class="rebirth-btn" id="rebirth-btn" onclick="doRebirth()">REBIRTH</button>
+        <div class="rebirth-mult">Next multiplier: <span id="rb-next-mult">×1.00</span></div>
+      </div>
+    </div>
+
+    <div class="section-title">✨ Essence Shop <span style="font-size:11px;color:var(--muted);font-weight:400;">— permanent upgrades bought with Essence</span></div>
+    <div class="grid-cards" id="essence-shop"></div>
+  </div>
+</div>
+
+<!-- GAMBLE / CASINO -->
+<div id="gamble" class="page">
+  <div class="page-header">
+    <div class="page-title">Aura <span>Casino</span></div>
+    <div class="page-sub">Risk your Aura for massive multipliers across 8 different games. All virtual — no real money!</div>
+  </div>
+  <div class="gamble-warning">
+    <div class="warning-icon">⚠️</div>
+    <div class="warning-text">
+      <h3>You're gambling your Aura here!</h3>
+      <p>Every bet uses <strong>your real Aura balance</strong> — the same Aura you earn from clicking and rebirthing. Win big and flex, or lose it all and grind back. <strong>No real money involved</strong>, this is all for fun. Bet responsibly king 👑</p>
+    </div>
+  </div>
+
+  <div class="casino-tabs" id="casino-tabs"></div>
+  <div class="casino-panels" id="casino-panels"></div>
+</div>
+
+<!-- CLICKER -->
+<div id="clicker" class="page">
+  <div class="page-header">
+    <div class="page-title">Alim <span>Clicker</span></div>
+    <div class="page-sub">Tap Alim to earn Aura. Buy upgrades to automate and multiply your gains.</div>
+  </div>
+  <div class="clicker-layout">
+    <div class="clicker-main">
+      <div class="click-counter" id="click-count">50</div>
+      <div class="cps-label" id="cps-label">0 aura/sec · Click to earn!</div>
+      <div class="crit-hint">💥 5% chance of a CRITICAL click for 10× Aura</div>
+      <div class="milestone-bar">
+        <div class="milestone-label"><span>Next milestone</span><span id="milestone-next">100</span></div>
+        <div class="milestone-track"><div class="milestone-fill" id="milestone-fill" style="width:50%"></div></div>
+      </div>
+      <div class="clicker-btn-wrap" onclick="handleClick(event)">
+        <div class="click-ring"></div>
+        <button class="alim-click-btn">
+          <img class="alim-click-img" src="https://www.image2url.com/r2/default/images/1782975202412-fbe9d6f0-bc77-4135-ba1c-4ac185924a81.jpg" alt="Alim">
+        </button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Tap Alim to earn Aura! 👆</div>
+    </div>
+    <div class="shop-section">
+      <div class="shop-tabs" id="shop-tabs"></div>
+      <div class="shop-title">⚡ Upgrades</div>
+      <div id="shop-items"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HUB: Quests / Daily / Leaderboard -->
+<div id="hub" class="page">
+  <div class="page-header">
+    <div class="page-title">Quests & <span>Rewards</span></div>
+    <div class="page-sub">Complete quests, claim your daily streak, and climb the leaderboard.</div>
+  </div>
+  <div class="content-wrap">
+    <div class="hub-grid">
+      <div class="hub-card">
+        <h3>📅 Daily Reward</h3>
+        <div class="daily-grid" id="daily-grid"></div>
+        <button class="daily-claim-btn" id="daily-claim-btn" onclick="claimDaily()">CLAIM DAY <span id="daily-day-label">1</span></button>
+      </div>
+      <div class="hub-card">
+        <h3>🏆 Leaderboard <span style="font-size:10px;color:var(--muted);font-weight:400;">(simulated)</span></h3>
+        <div id="lb-list"></div>
+      </div>
+      <div class="hub-card" style="grid-column:1/-1;">
+        <h3>📜 Quests</h3>
+        <div id="quest-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings" class="page">
+  <div class="page-header">
+    <div class="page-title">Website <span>Settings</span></div>
+    <div class="page-sub">Personalize the look of Alim's World.</div>
+  </div>
+  <div class="content-wrap">
+    <div class="hub-card" style="max-width:640px;">
+      <h3>🎨 Accent Color</h3>
+      <div class="theme-swatches" id="theme-swatches"></div>
+      <div class="custom-color-row">
+        <input type="color" id="custom-color" value="#6c3bff" oninput="setTheme(this.value)">
+        <span style="font-size:12px;color:var(--muted);">Pick a custom color</span>
+      </div>
+    </div>
+    <div class="hub-card" style="max-width:640px;margin-top:20px;">
+      <h3>⚙️ Game Data</h3>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Reset save</div>
+          <div class="settings-desc">Wipes all Aura, upgrades, essence, and rebirths. Cannot be undone.</div>
+        </div>
+        <button class="danger-btn" onclick="resetSave()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main-wrap -->
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <button class="bnav-btn active" id="bnav-home" onclick="showPage('home')"><span class="bicon">🏠</span>Home</button>
+  <button class="bnav-btn" id="bnav-clicker" onclick="showPage('clicker')"><span class="bicon">👆</span>Click</button>
+  <button class="bnav-btn" id="bnav-gamble" onclick="showPage('gamble')"><span class="bicon">🎰</span>Casino</button>
+  <button class="bnav-btn" id="bnav-rebirth" onclick="showPage('rebirth')"><span class="bicon">🔁</span>Rebirth</button>
+  <button class="bnav-btn" id="bnav-hub" onclick="showPage('hub')"><span class="bicon">🏆</span>Hub</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ STATE ============
+let aura = 50, totalClicks = 0, lifetimeAura = 50;
+let rebirths = 0, essence = 0;
+let autoClickInterval = null;
+let coinChoice='heads', diceChoice='high', rouletteChoice='red';
+let minesActive=false, minesBet=0, minesMultiplier=1, minesBoard=[], minesCells=[], minesSafesFound=0;
+let bjDeck=[], bjPlayer=[], bjDealer=[], bjBet=0, bjActive=false;
+let crashActive=false, crashBet=0, crashMult=1, crashInterval=null, crashedOut=false;
+let dailyStreak=0, lastDailyClaim=null;
+let questProgress={};
+
+// ============ ESSENCE / PRESTIGE SHOP ============
+const ESSENCE_SHOP=[
+  {id:'e_mult', name:'Aura Amplifier', icon:'💠', desc:'+10% permanent Aura multiplier', baseCost:1, costMult:1.8, owned:0, effect:'mult'},
+  {id:'e_crit', name:'Crit Mastery', icon:'⚡', desc:'+2% critical click chance', baseCost:2, costMult:1.9, owned:0, effect:'crit'},
+  {id:'e_start', name:'Head Start', icon:'🚀', desc:'Start each rebirth with 500 bonus Aura', baseCost:1, costMult:2.2, owned:0, effect:'headstart'},
+  {id:'e_luck', name:'Casino Luck', icon:'🍀', desc:'+3% better casino odds', baseCost:2, costMult:2.0, owned:0, effect:'luck'},
+];
+function essenceCost(it){return Math.ceil(it.baseCost*Math.pow(it.costMult,it.owned));}
+function essenceMultBonus(){const it=ESSENCE_SHOP.find(i=>i.id==='e_mult');return 1+it.owned*0.1;}
+function essenceCritBonus(){const it=ESSENCE_SHOP.find(i=>i.id==='e_crit');return it.owned*0.02;}
+function essenceHeadstart(){const it=ESSENCE_SHOP.find(i=>i.id==='e_start');return it.owned*500;}
+function essenceLuckBonus(){const it=ESSENCE_SHOP.find(i=>i.id==='e_luck');return it.owned*0.03;}
+
+function renderEssenceShop(){
+  document.getElementById('essence-shop').innerHTML = ESSENCE_SHOP.map(it=>{
+    const cost=essenceCost(it), can=essence>=cost;
+    return `<div class="prestige-card${can?'':' disabled'}">
+      <div class="prestige-card-top"><span class="prestige-icon">${it.icon}</span><span class="prestige-name">${it.name}</span></div>
+      <div class="prestige-desc">${it.desc}</div>
+      ${it.owned>0?'<div class="prestige-owned">Owned: '+it.owned+'</div>':''}
+      <button class="prestige-buy" ${can?'':'disabled'} onclick="buyEssence('${it.id}')">✨ ${cost} Essence</button>
+    </div>`;
+  }).join('');
+}
+function buyEssence(id){
+  const it=ESSENCE_SHOP.find(i=>i.id===id);
+  const cost=essenceCost(it);
+  if(essence<cost)return;
+  essence-=cost;it.owned++;
+  updateRebirthUI();renderEssenceShop();updateAura();updateClickerUI();
+  showToast(it.icon+' Upgraded '+it.name+'!');
+}
+
+function rebirthRequirement(){return Math.floor(10000*Math.pow(2.1,rebirths));}
+function rebirthGain(){
+  const req=rebirthRequirement();
+  if(lifetimeAura<req)return 0;
+  return Math.floor(Math.pow(lifetimeAura/req,0.6)*(rebirths+1));
+}
+function currentAuraMultiplier(){return (1+rebirths*0.25)*essenceMultBonus();}
+
+function updateRebirthUI(){
+  document.getElementById('rb-current').textContent=rebirths;
+  document.getElementById('rb-essence').textContent=fmt(essence);
+  document.getElementById('rb-multiplier').textContent='×'+currentAuraMultiplier().toFixed(2);
+  document.getElementById('rb-lifetime').textContent=fmt(lifetimeAura);
+  document.getElementById('rb-req-amt').textContent=fmt(rebirthRequirement());
+  const gain=rebirthGain();
+  document.getElementById('rb-gain-amt').textContent='+'+fmt(gain);
+  document.getElementById('rebirth-btn').disabled = gain<=0;
+  document.getElementById('rb-next-mult').textContent='×'+((1+(rebirths+1)*0.25)*essenceMultBonus()).toFixed(2);
+  document.getElementById('nav-rebirths').textContent=rebirths;
+  document.getElementById('home-rebirths').textContent=rebirths;
+}
+function doRebirth(){
+  const gain=rebirthGain();
+  if(gain<=0){showToast('Need '+fmt(rebirthRequirement())+' lifetime Aura to rebirth!');return;}
+  essence+=gain;rebirths++;
+  aura=50+essenceHeadstart();
+  SHOP.forEach(it=>it.owned=0);
+  updateAura();updateClickerUI();updateRebirthUI();renderEssenceShop();
+  showToast('🔁 Rebirth #'+rebirths+'! Gained +'+fmt(gain)+' Essence');
+}
+
+// ============ FOOD RAIN ============
+const FOODS=['•','🍔','•','•','•','🍩','🍦','•','🌯','🍗','🥪','•','•','•','🥐','•','🍟','🥩'];
+function spawnFood(){
+  const rain=document.getElementById('food-rain');
+  const f=document.createElement('div');
+  f.className='food-drop';f.textContent=FOODS[Math.floor(Math.random()*FOODS.length)];
+  const dur=6+Math.random()*8;
+  f.style.left=Math.random()*100+'vw';
+  f.style.animationDuration=dur+'s';
+  f.style.animationDelay=(-Math.random()*dur)+'s';
+  f.style.fontSize=(20+Math.random()*18)+'px';
+  f.style.opacity=0.55+Math.random()*.35;
+  rain.appendChild(f);
+  setTimeout(()=>f.remove(),(dur+2)*1000);
+}
+for(let i=0;i<18;i++)spawnFood();
+setInterval(spawnFood,1800);
+
+// ============ NAV ============
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.side-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const bn=document.getElementById('bnav-'+id); if(bn)bn.classList.add('active');
+  const sb=document.getElementById('side-'+id); if(sb)sb.classList.add('active');
+  if(id==='home')updateHomeStats();
+  if(id==='hub'){renderQuests();renderDaily();renderLeaderboard();}
+  window.scrollTo(0,0);
+}
+
+function updateAura(){
+  document.getElementById('nav-aura').textContent=fmt(aura);
+  document.getElementById('home-aura').textContent=fmt(aura);
+  document.getElementById('click-count').textContent=fmt(aura);
+  checkQuests();
+}
+function updateHomeStats(){
+  document.getElementById('home-aura').textContent=fmt(aura);
+  document.getElementById('home-clicks').textContent=fmt(totalClicks);
+}
+function fmt(n){
+  if(n>=1e12)return(n/1e12).toFixed(2)+'T';
+  if(n>=1e9)return(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return(n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return(n/1e3).toFixed(1)+'K';
+  return Math.floor(n).toString();
+}
+function gainAura(n){
+  const boosted=n*currentAuraMultiplier();
+  aura+=boosted; lifetimeAura+=boosted;
+  return boosted;
+}
+
+// ============ THEME ============
+const THEME_PRESETS=[
+  {name:'Violet',val:'#6c3bff'},{name:'Cyan',val:'#00d4ff'},{name:'Gold',val:'#ffd700'},
+  {name:'Rose',val:'#ff3d78'},{name:'Emerald',val:'#00e676'},{name:'Orange',val:'#ff8c3d'},
+  {name:'Crimson',val:'#ff3d57'},{name:'Sky',val:'#3d9bff'},
+];
+function renderThemeSwatches(){
+  document.getElementById('theme-swatches').innerHTML=THEME_PRESETS.map(t=>
+    `<div class="swatch" style="background:${t.val}" title="${t.name}" onclick="setTheme('${t.val}')"></div>`
+  ).join('');
+  updateSwatchSelection();
+}
+function updateSwatchSelection(){
+  const current=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  document.querySelectorAll('.swatch').forEach(s=>{
+    s.classList.toggle('selected', s.style.background.replace(/\s/g,'')===hexToRgbStr(current));
+  });
+}
+function hexToRgbStr(hex){
+  hex=hex.replace('#','');
+  const r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16);
+  return 'rgb('+r+', '+g+', '+b+')';
+}
+function shadeColor(hex, percent){
+  hex=hex.replace('#','');
+  let r=parseInt(hex.substring(0,2),16),g=parseInt(hex.substring(2,4),16),b=parseInt(hex.substring(4,6),16);
+  r=Math.min(255,Math.max(0,Math.floor(r*(1+percent))));
+  g=Math.min(255,Math.max(0,Math.floor(g*(1+percent))));
+  b=Math.min(255,Math.max(0,Math.floor(b*(1+percent))));
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function setTheme(hex){
+  document.documentElement.style.setProperty('--accent',hex);
+  document.documentElement.style.setProperty('--accent-light',shadeColor(hex,0.35));
+  document.getElementById('custom-color').value=hex;
+  localStorage.setItem && null; // no-op, artifacts avoid localStorage
+  updateSwatchSelection();
+}
+
+// ============ QUESTS ============
+const QUESTS=[
+  {id:'q_click100', icon:'👆', name:'Click 100 times', target:100, type:'clicks', reward:200},
+  {id:'q_aura5000', icon:'✨', name:'Earn 5,000 lifetime Aura', target:5000, type:'lifetime', reward:500},
+  {id:'q_gamble10', icon:'🎰', name:'Play 10 casino rounds', target:10, type:'gambles', reward:400},
+  {id:'q_upgrade5', icon:'⚡', name:'Buy 5 clicker upgrades', target:5, type:'upgrades', reward:300},
+  {id:'q_rebirth1', icon:'🔁', name:'Rebirth once', target:1, type:'rebirths', reward:1000},
+];
+let questCounters={clicks:0, lifetime:0, gambles:0, upgrades:0, rebirths:0};
+let questClaimed={};
+function checkQuests(){
+  questCounters.lifetime=lifetimeAura;
+  questCounters.rebirths=rebirths;
+}
+function renderQuests(){
+  document.getElementById('quest-list').innerHTML=QUESTS.map(q=>{
+    const prog=Math.min(questCounters[q.type]||0,q.target);
+    const pct=(prog/q.target)*100;
+    const done=prog>=q.target;
+    const claimed=questClaimed[q.id];
+    return `<div class="quest-item">
+      <span class="quest-icon">${q.icon}</span>
+      <div class="quest-info">
+        <div class="quest-name">${q.name}</div>
+        <div class="quest-progress-track"><div class="quest-progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="quest-reward">✨${q.reward}</div>
+      <button class="quest-claim" ${(!done||claimed)?'disabled':''} onclick="claimQuest('${q.id}')">${claimed?'✓ Done':'Claim'}</button>
+    </div>`;
+  }).join('');
+}
+function claimQuest(id){
+  const q=QUESTS.find(x=>x.id===id);
+  if(!q||questClaimed[id])return;
+  const prog=questCounters[q.type]||0;
+  if(prog<q.target)return;
+  questClaimed[id]=true;
+  gainAura(q.reward);
+  updateAura();updateClickerUI();
+  renderQuests();
+  showToast('🏆 Quest complete! +'+q.reward+' Aura');
+}
+
+// ============ DAILY REWARDS ============
+const DAILY_REWARDS=[100,200,350,500,750,1000,2000];
+function renderDaily(){
+  document.getElementById('daily-grid').innerHTML=DAILY_REWARDS.map((r,i)=>{
+    const day=i+1;
+    const claimed=day<=dailyStreak;
+    const isToday=day===dailyStreak+1;
+    return `<div class="daily-day ${claimed?'claimed':''} ${isToday?'today':''}">
+      <div class="daily-day-num">D${day}</div>
+      <div class="daily-day-reward">${claimed?'✓':r}</div>
+    </div>`;
+  }).join('');
+  const nextDay=Math.min(dailyStreak+1,7);
+  document.getElementById('daily-day-label').textContent=nextDay;
+  document.getElementById('daily-claim-btn').disabled = dailyStreak>=7;
+}
+function claimDaily(){
+  if(dailyStreak>=7){showToast('Come back tomorrow for a new cycle!');return;}
+  dailyStreak++;
+  const reward=DAILY_REWARDS[dailyStreak-1];
+  gainAura(reward);
+  updateAura();updateClickerUI();
+  renderDaily();
+  showToast('📅 Day '+dailyStreak+' claimed! +'+reward+' Aura');
+  if(dailyStreak>=7){ setTimeout(()=>{dailyStreak=0;renderDaily();},1500); }
+}
+
+// ============ LEADERBOARD (simulated) ============
+function renderLeaderboard(){
+  const sim=[
+    {name:'ShadowKing99',val:842000},{name:'AuraQueen',val:611500},{name:'xX_Legend_Xx',val:405200},
+    {name:'ClickGodMike',val:298700},{name:'NovaStrike',val:176300},
+  ];
+  const entries=[...sim,{name:'You',val:lifetimeAura,you:true}].sort((a,b)=>b.val-a.val);
+  document.getElementById('lb-list').innerHTML=entries.map((e,i)=>{
+    const rankClass=i===0?'top1':i===1?'top2':i===2?'top3':'';
+    return `<div class="lb-row ${e.you?'you':''}">
+      <div class="lb-rank ${rankClass}">${i+1}</div>
+      <div class="lb-name">${e.you?'👑 You':e.name}</div>
+      <div class="lb-val">${fmt(e.val)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============ CASINO: 8 GAMES ============
+const CASINO_GAMES=[
+  {id:'coinflip', name:'Coin Flip', icon:'🪙'},
+  {id:'slots', name:'Slots', icon:'🎰'},
+  {id:'dice', name:'Dice', icon:'🎲'},
+  {id:'roulette', name:'Roulette', icon:'🎡'},
+  {id:'mines', name:'Mines', icon:'💣'},
+  {id:'blackjack', name:'Blackjack', icon:'🃏'},
+  {id:'crash', name:'Crash', icon:'🚀'},
+  {id:'plinko', name:'Plinko', icon:'⚪'},
+];
+function buildCasinoTabs(){
+  document.getElementById('casino-tabs').innerHTML=CASINO_GAMES.map((g,i)=>
+    `<button class="casino-tab${i===0?' active':''}" id="ctab-${g.id}" onclick="switchCasinoTab('${g.id}')">${g.icon} ${g.name}</button>`
+  ).join('');
+}
+function switchCasinoTab(id){
+  document.querySelectorAll('.casino-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.casino-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ctab-'+id).classList.add('active');
+  document.getElementById('cpanel-'+id).classList.add('active');
+}
+function recordGamble(){questCounters.gambles=(questCounters.gambles||0)+1;}
+
+function getGambleBet(id){
+  const v=parseInt(document.getElementById(id).value);
+  if(isNaN(v)||v<1){showToast('Enter a valid Aura amount!');return null;}
+  if(v>aura){showToast('Not enough Aura! 😬');return null;}
+  return v;
+}
+function setQuickBet(inputId,frac){
+  const el=document.getElementById(inputId);
+  if(frac==='max')el.value=Math.floor(aura);
+  else el.value=Math.max(1,Math.floor(aura*frac));
+}
+
+// --- COIN FLIP ---
+function selectCoin(c){coinChoice=c;document.getElementById('coin-heads').classList.toggle('selected',c==='heads');document.getElementById('coin-tails').classList.toggle('selected',c==='tails');}
+function playCoinFlip(){
+  const bet=getGambleBet('coin-bet');if(!bet)return;
+  aura-=bet;updateAura();recordGamble();
+  const coin=document.getElementById('coin-face');
+  coin.classList.add('flipping');
+  setTimeout(()=>{
+    coin.classList.remove('flipping');
+    const luck=essenceLuckBonus();
+    const res=Math.random()<(0.5+luck/2)===(coinChoice==='heads')?coinChoice:(coinChoice==='heads'?'tails':'heads');
+    coin.textContent=res==='heads'?'👑':'🌟';
+    const el=document.getElementById('coin-result');
+    if(res===coinChoice){const w=gainAura(bet*2);updateAura();el.className='gamble-result win';el.textContent='✅ '+res.toUpperCase()+'! Won '+fmt(w)+' Aura!';}
+    else{el.className='gamble-result lose';el.textContent='❌ '+res.toUpperCase()+'. Lost '+bet+' Aura.';}
+  },900);
+}
+
+// --- SLOTS ---
+const SLOT_SYMS=['⭐','🎮','💎','👑','🔥','🌟'];
+const SLOT_MULT={'👑':20,'💎':10,'🔥':7,'🌟':5,'⭐':3,'🎮':2};
+function playSlots(){
+  const bet=getGambleBet('slot-bet');if(!bet)return;
+  aura-=bet;updateAura();recordGamble();
+  const reels=[document.getElementById('s0'),document.getElementById('s1'),document.getElementById('s2')];
+  reels.forEach(r=>r.classList.add('spinning'));
+  let results=[];
+  [600,850,1100].forEach((d,i)=>{
+    setTimeout(()=>{
+      reels[i].classList.remove('spinning');
+      const sym=SLOT_SYMS[Math.floor(Math.random()*SLOT_SYMS.length)];
+      reels[i].textContent=sym;results[i]=sym;
+      if(i===2){
+        setTimeout(()=>{
+          const el=document.getElementById('slot-result');
+          if(results[0]===results[1]&&results[1]===results[2]){
+            const m=SLOT_MULT[results[0]]||2;const w=gainAura(bet*m);updateAura();
+            el.className='gamble-result win';el.textContent='🎉 JACKPOT! Won '+fmt(w)+' Aura! (×'+m+')';
+          }else if(results[0]===results[1]||results[1]===results[2]||results[0]===results[2]){
+            const w=gainAura(bet*1.5);updateAura();
+            el.className='gamble-result win';el.textContent='✅ Two of a kind! Won '+fmt(w)+' Aura!';
+          }else{el.className='gamble-result lose';el.textContent='❌ No match. Lost '+bet+' Aura.';}
+        },200);
+      }
+    },d);
+  });
+}
+
+// --- DICE ---
+function selectDice(c){diceChoice=c;document.getElementById('dice-high').classList.toggle('selected',c==='high');document.getElementById('dice-low').classList.toggle('selected',c==='low');}
+function playDice(){
+  const bet=getGambleBet('dice-bet');if(!bet)return;
+  aura-=bet;updateAura();recordGamble();
+  const d1=document.getElementById('die1'),d2=document.getElementById('die2');
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  d1.classList.add('rolling');d2.classList.add('rolling');
+  setTimeout(()=>{
+    d1.classList.remove('rolling');d2.classList.remove('rolling');
+    const r1=Math.ceil(Math.random()*6),r2=Math.ceil(Math.random()*6);
+    d1.textContent=faces[r1-1];d2.textContent=faces[r2-1];
+    const avg=(r1+r2)/2,isHigh=avg>3.5;
+    const el=document.getElementById('dice-result');
+    if((diceChoice==='high'&&isHigh)||(diceChoice==='low'&&!isHigh)){
+      const w=gainAura(bet*1.9);updateAura();
+      el.className='gamble-result win';el.textContent='✅ Rolled '+(r1+r2)+'. Won '+fmt(w)+' Aura!';
+    }else{el.className='gamble-result lose';el.textContent='❌ Rolled '+(r1+r2)+'. Lost '+bet+' Aura.';}
+  },900);
+}
+
+// --- ROULETTE ---
+const RNUMS=[{n:0,c:'green'},{n:32,c:'red'},{n:15,c:'black'},{n:19,c:'red'},{n:4,c:'black'},{n:21,c:'red'},{n:2,c:'black'},{n:25,c:'red'},{n:17,c:'black'},{n:34,c:'red'},{n:6,c:'black'},{n:27,c:'red'},{n:13,c:'black'},{n:36,c:'red'},{n:11,c:'black'},{n:30,c:'red'},{n:8,c:'black'},{n:23,c:'red'},{n:10,c:'black'},{n:5,c:'red'},{n:24,c:'black'},{n:16,c:'red'},{n:33,c:'black'},{n:1,c:'red'},{n:20,c:'black'},{n:14,c:'red'},{n:31,c:'black'},{n:9,c:'red'},{n:22,c:'black'},{n:18,c:'red'},{n:29,c:'black'},{n:7,c:'red'},{n:28,c:'black'},{n:12,c:'red'},{n:35,c:'black'},{n:3,c:'red'},{n:26,c:'black'}];
+function selectRoulette(c){rouletteChoice=c;['red','black','green'].forEach(x=>document.getElementById('rc-'+x).classList.toggle('selected',x===c));}
+function playRoulette(){
+  const bet=getGambleBet('roulette-bet');if(!bet)return;
+  aura-=bet;updateAura();recordGamble();
+  const display=document.getElementById('roulette-display');
+  const CLR={red:'🔴',black:'⚫',green:'🟢'};
+  let tick=0;
+  const spin=setInterval(()=>{
+    const r=RNUMS[Math.floor(Math.random()*RNUMS.length)];
+    display.textContent=CLR[r.c]+r.n;
+    if(++tick>20){
+      clearInterval(spin);
+      const res=RNUMS[Math.floor(Math.random()*RNUMS.length)];
+      display.textContent=CLR[res.c]+res.n;
+      const el=document.getElementById('roulette-result');
+      if(res.c===rouletteChoice){
+        const m=res.c==='green'?14:2,w=gainAura(bet*m);updateAura();
+        el.className='gamble-result win';el.textContent='✅ '+CLR[res.c]+' '+res.n+'! Won '+fmt(w)+' Aura! (×'+m+')';
+      }else{el.className='gamble-result lose';el.textContent='❌ '+CLR[res.c]+' '+res.n+'. Lost '+bet+' Aura.';}
+    }
+  },80);
+}
+
+// --- MINES ---
+function buildMinesGrid(){
+  const grid=document.getElementById('mines-grid');
+  grid.innerHTML='';minesBoard=Array(25).fill(null);minesCells=[];
+  const mines=new Set();
+  while(mines.size<5)mines.add(Math.floor(Math.random()*25));
+  for(let i=0;i<25;i++){
+    minesBoard[i]=mines.has(i)?'bomb':'gem';
+    const cell=document.createElement('div');
+    cell.className='mine-cell';cell.dataset.i=i;cell.textContent='?';
+    cell.onclick=()=>clickMine(i);
+    grid.appendChild(cell);minesCells.push(cell);
+  }
+}
+function startMines(){
+  const bet=getGambleBet('mines-bet');if(!bet)return;
+  minesBet=bet;aura-=bet;updateAura();recordGamble();
+  minesActive=true;minesMultiplier=1;minesSafesFound=0;
+  buildMinesGrid();
+  document.getElementById('mines-cashout').disabled=false;
+  document.getElementById('mines-start-btn').textContent='RESTART';
+  const el=document.getElementById('mines-result');el.className='gamble-result';
+  el.textContent='⛏️ Find gems! Avoid bombs! Cash out anytime.';
+}
+function clickMine(i){
+  if(!minesActive)return;
+  const cell=minesCells[i];if(cell.classList.contains('revealed'))return;
+  cell.classList.add('revealed');
+  if(minesBoard[i]==='bomb'){
+    cell.classList.add('bomb');cell.textContent='💣';minesActive=false;
+    document.getElementById('mines-cashout').disabled=true;
+    minesBoard.forEach((v,j)=>{if(v==='bomb'){minesCells[j].classList.add('revealed','bomb');minesCells[j].textContent='💣';}});
+    const el=document.getElementById('mines-result');el.className='gamble-result lose';
+    el.textContent='💥 BOOM! You lost '+minesBet+' Aura!';
+  }else{
+    cell.classList.add('safe');cell.textContent='💎';minesSafesFound++;
+    minesMultiplier=1+minesSafesFound*0.3;
+    const el=document.getElementById('mines-result');el.className='gamble-result win';
+    el.textContent='💎 Safe! ×'+minesMultiplier.toFixed(1)+' — Cash out: '+Math.floor(minesBet*minesMultiplier)+' Aura';
+  }
+}
+function cashoutMines(){
+  if(!minesActive||minesSafesFound===0)return;
+  const w=gainAura(minesBet*minesMultiplier);
+  minesActive=false;document.getElementById('mines-cashout').disabled=true;
+  const el=document.getElementById('mines-result');el.className='gamble-result win';
+  el.textContent='💰 Cashed out '+fmt(w)+' Aura at ×'+minesMultiplier.toFixed(1)+'!';
+  updateAura();
+}
+
+// --- BLACKJACK ---
+function newBjDeck(){
+  const suits=['♠','♥','♦','♣'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const deck=[];
+  for(const s of suits)for(const r of ranks)deck.push({r,s});
+  for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
+  return deck;
+}
+function bjCardVal(c){if(c.r==='A')return 11;if(['J','Q','K'].includes(c.r))return 10;return parseInt(c.r);}
+function bjHandValue(hand){
+  let total=hand.reduce((s,c)=>s+bjCardVal(c),0);
+  let aces=hand.filter(c=>c.r==='A').length;
+  while(total>21&&aces>0){total-=10;aces--;}
+  return total;
+}
+function renderBjHand(elId,hand,hideSecond){
+  document.getElementById(elId).innerHTML=hand.map((c,i)=>{
+    if(hideSecond&&i===1)return '<div class="bj-card">🂠</div>';
+    const black=(c.s==='♠'||c.s==='♣');
+    return `<div class="bj-card${black?' black':''}">${c.r}${c.s}</div>`;
+  }).join('');
+}
+function startBlackjack(){
+  const bet=getGambleBet('bj-bet');if(!bet)return;
+  bjBet=bet;aura-=bet;updateAura();recordGamble();
+  bjDeck=newBjDeck();bjPlayer=[bjDeck.pop(),bjDeck.pop()];bjDealer=[bjDeck.pop(),bjDeck.pop()];
+  bjActive=true;
+  renderBjHand('bj-player-cards',bjPlayer,false);
+  renderBjHand('bj-dealer-cards',bjDealer,true);
+  document.getElementById('bj-player-total').textContent='Total: '+bjHandValue(bjPlayer);
+  document.getElementById('bj-dealer-total').textContent='Total: ?';
+  document.getElementById('bj-hit').disabled=false;document.getElementById('bj-stand').disabled=false;
+  document.getElementById('bj-start').textContent='RESTART';
+  const el=document.getElementById('bj-result');el.className='gamble-result';el.textContent='🃏 Hit to draw, or stand to let the dealer play.';
+  if(bjHandValue(bjPlayer)===21){setTimeout(()=>bjStand(),500);}
+}
+function bjHit(){
+  if(!bjActive)return;
+  bjPlayer.push(bjDeck.pop());
+  renderBjHand('bj-player-cards',bjPlayer,false);
+  const v=bjHandValue(bjPlayer);
+  document.getElementById('bj-player-total').textContent='Total: '+v;
+  if(v>21){
+    bjActive=false;document.getElementById('bj-hit').disabled=true;document.getElementById('bj-stand').disabled=true;
+    renderBjHand('bj-dealer-cards',bjDealer,false);
+    document.getElementById('bj-dealer-total').textContent='Total: '+bjHandValue(bjDealer);
+    const el=document.getElementById('bj-result');el.className='gamble-result lose';el.textContent='💥 Bust! You lost '+bjBet+' Aura.';
+  }
+}
+function bjStand(){
+  if(!bjActive)return;
+  bjActive=false;document.getElementById('bj-hit').disabled=true;document.getElementById('bj-stand').disabled=true;
+  while(bjHandValue(bjDealer)<17)bjDealer.push(bjDeck.pop());
+  renderBjHand('bj-dealer-cards',bjDealer,false);
+  const dv=bjHandValue(bjDealer),pv=bjHandValue(bjPlayer);
+  document.getElementById('bj-dealer-total').textContent='Total: '+dv;
+  const el=document.getElementById('bj-result');
+  if(dv>21||pv>dv){const w=gainAura(bjBet*2);updateAura();el.className='gamble-result win';el.textContent='✅ You win! ('+pv+' vs '+dv+') Won '+fmt(w)+' Aura!';}
+  else if(pv===dv){aura+=bjBet;updateAura();el.className='gamble-result';el.textContent='🤝 Push. Bet returned.';}
+  else{el.className='gamble-result lose';el.textContent='❌ Dealer wins ('+dv+' vs '+pv+'). Lost '+bjBet+' Aura.';}
+}
+
+// --- CRASH ---
+function startCrash(){
+  const bet=getGambleBet('crash-bet');if(!bet)return;
+  crashBet=bet;aura-=bet;updateAura();recordGamble();
+  crashActive=true;crashMult=1.00;crashedOut=false;
+  document.getElementById('crash-start').disabled=true;
+  document.getElementById('crash-cashout').disabled=false;
+  const el=document.getElementById('crash-result');el.className='gamble-result';el.textContent='🚀 Climbing... cash out before it crashes!';
+  const md=document.getElementById('crash-mult-display');md.classList.remove('crashed');
+  const crashPoint=1+Math.random()*Math.random()*14; // skewed toward lower crash points
+  crashInterval=setInterval(()=>{
+    crashMult+=0.03+crashMult*0.015;
+    md.textContent='×'+crashMult.toFixed(2);
+    if(crashMult>=crashPoint){
+      clearInterval(crashInterval);crashActive=false;
+      document.getElementById('crash-cashout').disabled=true;
+      document.getElementById('crash-start').disabled=false;
+      md.classList.add('crashed');
+      if(!crashedOut){
+        const el2=document.getElementById('crash-result');el2.className='gamble-result lose';
+        el2.textContent='💥 Crashed at ×'+crashMult.toFixed(2)+'! Lost '+crashBet+' Aura.';
+      }
+    }
+  },80);
+}
+function cashoutCrash(){
+  if(!crashActive)return;
+  crashedOut=true;crashActive=false;
+  clearInterval(crashInterval);
+  document.getElementById('crash-cashout').disabled=true;
+  document.getElementById('crash-start').disabled=false;
+  const w=gainAura(crashBet*crashMult);
+  const el=document.getElementById('crash-result');el.className='gamble-result win';
+  el.textContent='💰 Cashed out at ×'+crashMult.toFixed(2)+'! Won '+fmt(w)+' Aura!';
+  updateAura();
+}
+
+// --- PLINKO ---
+const PLINKO_MULTS=[8,3,1.5,0.5,0.3,0.5,1.5,3,8];
+function playPlinko(){
+  const bet=getGambleBet('plinko-bet');if(!bet)return;
+  aura-=bet;updateAura();recordGamble();
+  const ballEl=document.getElementById('plinko-ball');
+  ballEl.style.opacity=1;
+  let pos=4; // start middle index (0-8)
+  let steps=0;
+  const maxSteps=8;
+  const el=document.getElementById('plinko-result');
+  el.className='gamble-result';el.textContent='⚪ Ball is dropping...';
+  const drop=setInterval(()=>{
+    pos+=Math.random()<0.5?-0.5:0.5;
+    pos=Math.max(0,Math.min(8,pos));
+    steps++;
+    if(steps>=maxSteps){
+      clearInterval(drop);
+      const finalSlot=Math.round(pos);
+      const mult=PLINKO_MULTS[finalSlot];
+      document.querySelectorAll('.plinko-slot').forEach((s,i)=>{s.style.outline=i===finalSlot?'2px solid #fff':'none';});
+      if(mult>=1){const w=gainAura(bet*mult);updateAura();el.className='gamble-result win';el.textContent='🎉 Landed ×'+mult+'! Won '+fmt(w)+' Aura!';}
+      else{const w=gainAura(bet*mult);updateAura();el.className='gamble-result lose';el.textContent='😬 Landed ×'+mult+'. Kept '+fmt(w)+' Aura.';}
+    }
+  },150);
+}
+
+// ============ BUILD CASINO PANELS ============
+function buildCasinoPanels(){
+  const panels=document.getElementById('casino-panels');
+  panels.innerHTML=`
+    <div class="casino-panel active" id="cpanel-coinflip">
+      <div class="gamble-card">
+        <div class="gamble-title">🪙 Coin Flip</div>
+        <div class="gamble-sub">50/50 — double your Aura or lose it</div>
+        <div class="odds-badge">× 2.0 Payout</div>
+        <div class="coin-display"><div class="coin" id="coin-face">👑</div></div>
+        <div class="coin-choice-row">
+          <div class="coin-choice selected" id="coin-heads" onclick="selectCoin('heads')">👑 Heads</div>
+          <div class="coin-choice" id="coin-tails" onclick="selectCoin('tails')">🌟 Tails</div>
+        </div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('coin-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('coin-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('coin-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="coin-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" onclick="playCoinFlip()">FLIP</button>
+        </div>
+        <div class="gamble-result" id="coin-result">Pick a side and place your Aura!</div>
+      </div>
+    </div>
+
+    <div class="casino-panel" id="cpanel-slots">
+      <div class="gamble-card">
+        <div class="gamble-title">🎰 Slot Machine</div>
+        <div class="gamble-sub">Match 3 symbols — bet your Aura to spin</div>
+        <div class="odds-badge">Up to × 20 Payout</div>
+        <div class="slots-display">
+          <div class="slot-reel" id="s0">⭐</div><div class="slot-reel" id="s1">🎮</div><div class="slot-reel" id="s2">💎</div>
+        </div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('slot-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('slot-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('slot-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="slot-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" onclick="playSlots()">SPIN</button>
+        </div>
+        <div class="gamble-result" id="slot-result">Spin to win Aura!</div>
+      </div>
+    </div>
+
+    <div class="casino-panel" id="cpanel-dice">
+      <div class="gamble-card">
+        <div class="gamble-title">🎲 Dice Roll</div>
+        <div class="gamble-sub">Guess the average — put your Aura on it</div>
+        <div class="odds-badge">× 1.9 Payout</div>
+        <div class="dice-display"><div class="die" id="die1">🎲</div><div class="die" id="die2">🎲</div></div>
+        <div class="coin-choice-row">
+          <div class="coin-choice selected" id="dice-high" onclick="selectDice('high')">⬆️ High (4-6)</div>
+          <div class="coin-choice" id="dice-low" onclick="selectDice('low')">⬇️ Low (1-3)</div>
+        </div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('dice-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('dice-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('dice-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="dice-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" onclick="playDice()">ROLL</button>
+        </div>
+        <div class="gamble-result" id="dice-result">Pick high or low and roll!</div>
+      </div>
+    </div>
+
+    <div class="casino-panel" id="cpanel-roulette">
+      <div class="gamble-card">
+        <div class="gamble-title">🎡 Roulette</div>
+        <div class="gamble-sub">Spin the wheel — wager your Aura on a color</div>
+        <div class="odds-badge">Red/Black ×2 · Green ×14</div>
+        <div class="roulette-result-block" id="roulette-display">?</div>
+        <div class="roulette-btn-row">
+          <div class="roulette-choice selected" id="rc-red" onclick="selectRoulette('red')">🔴 Red</div>
+          <div class="roulette-choice" id="rc-black" onclick="selectRoulette('black')">⚫ Black</div>
+          <div class="roulette-choice" id="rc-green" onclick="selectRoulette('green')">🟢 Green</div>
+        </div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('roulette-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('roulette-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('roulette-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="roulette-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" onclick="playRoulette()">SPIN</button>
+        </div>
+        <div class="gamble-result" id="roulette-result">Pick a color, bet your Aura!</div>
+      </div>
+    </div>
+
+    <div class="casino-panel" id="cpanel-mines">
+      <div class="gamble-card" style="max-width:420px;">
+        <div class="gamble-title">💣 Mines</div>
+        <div class="gamble-sub">Stake your Aura — find gems, dodge bombs. Cash out before you explode!</div>
+        <div class="odds-badge">+0.3× per safe cell found</div>
+        <div class="mines-grid" id="mines-grid"></div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('mines-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('mines-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('mines-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="mines-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" id="mines-start-btn" onclick="startMines()">START</button>
+        </div>
+        <button class="cashout-btn" id="mines-cashout" disabled onclick="cashoutMines()">💰 Cash Out Aura</button>
+        <div class="gamble-result" id="mines-result">Set your Aura bet and start sweeping!</div>
+      </div>
+    </div>
+
+    <div class="casino-panel" id="cpanel-blackjack">
+      <div class="gamble-card" style="max-width:480px;">
+        <div class="gamble-title">🃏 Blackjack</div>
+        <div class="gamble-sub">Beat the dealer without going over 21</div>
+        <div class="odds-badge">× 2.0 Payout on win</div>
+        <div class="bj-table">
+          <div class="bj-row">
+            <div class="bj-label">Dealer</div>
+            <div class="bj-cards" id="bj-dealer-cards"></div>
+            <div class="bj-total" id="bj-dealer-total">Total: ?</div>
+          </div>
+          <div class="bj-row">
+            <div class="bj-label">You</div>
+            <div class="bj-cards" id="bj-player-cards"></div>
+            <div class="bj-total" id="bj-player-total">Total: 0</div>
+          </div>
+        </div>
+        <div class="bj-actions">
+          <button class="bj-action-btn" id="bj-hit" disabled onclick="bjHit()">Hit</button>
+          <button class="bj-action-btn" id="bj-stand" disabled onclick="bjStand()">Stand</button>
+        </div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('bj-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('bj-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('bj-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="bj-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" id="bj-start" onclick="startBlackjack()">DEAL</button>
+        </div>
+        <div class="gamble-result" id="bj-result">Place a bet and hit deal!</div>
+      </div>
+    </div>
+
+    <div class="casino-panel" id="cpanel-crash">
+      <div class="gamble-card">
+        <div class="gamble-title">🚀 Crash</div>
+        <div class="gamble-sub">Multiplier climbs — cash out before it crashes!</div>
+        <div class="odds-badge">Uncapped multiplier</div>
+        <div class="crash-display"><div class="crash-mult" id="crash-mult-display">×1.00</div></div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('crash-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('crash-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('crash-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="crash-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" id="crash-start" onclick="startCrash()">LAUNCH</button>
+        </div>
+        <button class="cashout-btn" id="crash-cashout" disabled onclick="cashoutCrash()">💰 Cash Out</button>
+        <div class="gamble-result" id="crash-result">Set your bet and launch!</div>
+      </div>
+    </div>
+
+    <div class="casino-panel" id="cpanel-plinko">
+      <div class="gamble-card">
+        <div class="gamble-title">⚪ Plinko</div>
+        <div class="gamble-sub">Drop the ball and let it bounce to a multiplier</div>
+        <div class="odds-badge">Up to × 8 Payout</div>
+        <div class="plinko-board">
+          <div id="plinko-ball" class="plinko-ball" style="opacity:0;"></div>
+          <div class="plinko-slots">
+            ${PLINKO_MULTS.map(m=>`<div class="plinko-slot">×${m}</div>`).join('')}
+          </div>
+        </div>
+        <div class="quick-bet-row">
+          <button class="quick-bet" onclick="setQuickBet('plinko-bet',0.25)">25%</button>
+          <button class="quick-bet" onclick="setQuickBet('plinko-bet',0.5)">50%</button>
+          <button class="quick-bet" onclick="setQuickBet('plinko-bet','max')">MAX</button>
+        </div>
+        <div class="gamble-input-row">
+          <input class="gamble-input" id="plinko-bet" type="number" placeholder="Bet Aura" min="1">
+          <button class="gamble-bet-btn" onclick="playPlinko()">DROP</button>
+        </div>
+        <div class="gamble-result" id="plinko-result">Drop the ball to win Aura!</div>
+      </div>
+    </div>
+  `;
+  buildMinesGrid();
+}
+</script>
+<script>
+// Second script block: init that depends on first block having run (kept separate for clarity)
+</script>
+
+<!-- ===== CLICKER SHOP DATA + LOGIC ===== -->
+<script>
+// ===== CLICKER SHOP: multiple categories, more original items =====
+const SHOP=[
+  // Basic
+  {id:'cursor', cat:'basic', name:'Lucky Cursor', icon:'🖱️', desc:'+1 Aura per click', baseCost:15, costMult:1.14, perClick:1, perSec:0, owned:0},
+  {id:'fan', cat:'basic', name:'Alim Fan Club', icon:'👥', desc:'+1 Aura per second', baseCost:100, costMult:1.13, perClick:0, perSec:1, owned:0},
+  {id:'phone', cat:'basic', name:'Alim Phone', icon:'📱', desc:'+5 Aura per click', baseCost:200, costMult:1.15, perClick:5, perSec:0, owned:0},
+  {id:'drone', cat:'basic', name:'Aura Drone', icon:'🚁', desc:'+5 Aura per second', baseCost:500, costMult:1.14, perClick:0, perSec:5, owned:0},
+  // Advanced
+  {id:'robot', cat:'advanced', name:'Alim Robot', icon:'🤖', desc:'+20 Aura per second', baseCost:2000, costMult:1.15, perClick:0, perSec:20, owned:0},
+  {id:'megaphone', cat:'advanced', name:'Golden Megaphone', icon:'📣', desc:'+30 Aura per click', baseCost:3500, costMult:1.16, perClick:30, perSec:0, owned:0},
+  {id:'studio', cat:'advanced', name:'Alim Streaming Studio', icon:'🎥', desc:'+80 Aura per second', baseCost:9000, costMult:1.15, perClick:0, perSec:80, owned:0},
+  {id:'portal', cat:'advanced', name:'Aura Portal', icon:'🌀', desc:'+150 Aura per second', baseCost:20000, costMult:1.16, perClick:0, perSec:150, owned:0},
+  // Elite
+  {id:'throne', cat:'elite', name:"Alim's Throne", icon:'🪑', desc:'+500 Aura per click', baseCost:60000, costMult:1.17, perClick:500, perSec:0, owned:0},
+  {id:'galaxy', cat:'elite', name:'Alim Galaxy', icon:'🌌', desc:'+1,000 Aura per second', baseCost:150000, costMult:1.17, perClick:0, perSec:1000, owned:0},
+  {id:'clone', cat:'elite', name:'Clone Army', icon:'👯', desc:'+3,000 Aura per second', baseCost:500000, costMult:1.18, perClick:0, perSec:3000, owned:0},
+  {id:'timewarp', cat:'elite', name:'Time Warp Generator', icon:'⏳', desc:'+8,000 Aura per second', baseCost:1500000, costMult:1.18, perClick:0, perSec:8000, owned:0},
+  // Mythic
+  {id:'crown_relic', cat:'mythic', name:'Ancient Crown Relic', icon:'👑', desc:'+25,000 Aura per click', baseCost:5000000, costMult:1.19, perClick:25000, perSec:0, owned:0},
+  {id:'dimension', cat:'mythic', name:'Alim Dimension', icon:'🌠', desc:'+60,000 Aura per second', baseCost:15000000, costMult:1.19, perClick:0, perSec:60000, owned:0},
+  {id:'godmode', cat:'mythic', name:'God Mode Chip', icon:'💠', desc:'+200,000 Aura per second', baseCost:60000000, costMult:1.2, perClick:0, perSec:200000, owned:0},
+];
+const SHOP_CATS=[
+  {id:'basic', name:'Basic', icon:'⭐'},
+  {id:'advanced', name:'Advanced', icon:'🔥'},
+  {id:'elite', name:'Elite', icon:'💎'},
+  {id:'mythic', name:'Mythic', icon:'👑'},
+];
+let activeShopCat='basic';
+
+function shopCost(it){return Math.floor(it.baseCost*Math.pow(it.costMult,it.owned));}
+function totalPerSec(){return SHOP.reduce((s,i)=>s+i.perSec*i.owned,0);}
+function totalPerClick(){return 1+SHOP.reduce((s,i)=>s+i.perClick*i.owned,0);}
+
+const MILESTONES=[100,500,1000,5000,10000,50000,100000,1000000,10000000,100000000];
+function getMilestone(n){for(let m of MILESTONES)if(n<m)return m;return MILESTONES[MILESTONES.length-1];}
+
+function handleClick(e){
+  const critChance=0.05+essenceCritBonus();
+  const isCrit=Math.random()<critChance;
+  const base=totalPerClick();
+  const raw=isCrit?base*10:base;
+  const gained=gainAura(raw);
+  totalClicks++;
+  questCounters.clicks=totalClicks;
+  updateAura();updateClickerUI();
+  const wrap=e.currentTarget;
+  const rect=wrap.getBoundingClientRect();
+  const p=document.createElement('div');
+  p.className='click-particle'+(isCrit?' crit':'');
+  p.textContent=(isCrit?'CRIT! +':'+')+fmt(gained)+'✨';
+  const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const cy=e.touches?e.touches[0].clientY:e.clientY;
+  p.style.left=(cx-rect.left-24)+'px';p.style.top=(cy-rect.top-24)+'px';
+  wrap.appendChild(p);setTimeout(()=>p.remove(),800);
+  const cc=document.getElementById('click-count');
+  cc.classList.add('bump');setTimeout(()=>cc.classList.remove('bump'),100);
+  renderQuests();
+}
+
+function updateClickerUI(){
+  document.getElementById('click-count').textContent=fmt(aura);
+  const pps=totalPerSec()*currentAuraMultiplier();
+  document.getElementById('cps-label').textContent=fmt(pps)+' aura/sec · +'+fmt(totalPerClick()*currentAuraMultiplier())+' per tap';
+  const next=getMilestone(aura);
+  const prev=MILESTONES[MILESTONES.indexOf(next)-1]||0;
+  document.getElementById('milestone-next').textContent=fmt(next);
+  const pct=Math.min(100,(aura-prev)/(next-prev)*100);
+  document.getElementById('milestone-fill').style.width=pct+'%';
+  renderShop();
+}
+
+function buildShopTabs(){
+  document.getElementById('shop-tabs').innerHTML=SHOP_CATS.map(c=>
+    `<div class="shop-tab${c.id===activeShopCat?' active':''}" onclick="switchShopCat('${c.id}')">${c.icon} ${c.name}</div>`
+  ).join('');
+}
+function switchShopCat(id){activeShopCat=id;buildShopTabs();renderShop();}
+
+function renderShop(){
+  const items=SHOP.filter(it=>it.cat===activeShopCat);
+  document.getElementById('shop-items').innerHTML=items.map(it=>{
+    const cost=shopCost(it),can=aura>=cost;
+    return `<div class="shop-item${can?'':' disabled'}" onclick="buyShop('${it.id}')">
+      <div class="shop-item-icon">${it.icon}</div>
+      <div class="shop-item-info">
+        <div class="shop-item-name">${it.name}</div>
+        <div class="shop-item-desc">${it.desc}</div>
+        ${it.owned>0?'<div class="shop-item-owned">Owned: '+it.owned+'</div>':''}
+      </div>
+      <div class="shop-item-right">
+        <div class="shop-item-cost">✨${fmt(cost)}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buyShop(id){
+  const it=SHOP.find(i=>i.id===id);
+  const cost=shopCost(it);if(aura<cost)return;
+  aura-=cost;it.owned++;
+  questCounters.upgrades=(questCounters.upgrades||0)+1;
+  updateAura();updateClickerUI();
+  showToast(it.icon+' Bought '+it.name+'!');
+  startAutoClicker();
+}
+
+function startAutoClicker(){
+  if(autoClickInterval)clearInterval(autoClickInterval);
+  autoClickInterval=setInterval(()=>{
+    const pps=totalPerSec();
+    if(pps>0){gainAura(pps);updateAura();updateClickerUI();}
+  },1000);
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function resetSave(){
+  if(!confirm('This will wipe ALL progress. Are you sure?'))return;
+  aura=50;totalClicks=0;lifetimeAura=50;rebirths=0;essence=0;
+  SHOP.forEach(it=>it.owned=0);
+  ESSENCE_SHOP.forEach(it=>it.owned=0);
+  dailyStreak=0;questClaimed={};questCounters={clicks:0,lifetime:0,gambles:0,upgrades:0,rebirths:0};
+  updateAura();updateClickerUI();updateRebirthUI();renderEssenceShop();renderQuests();renderDaily();
+  showToast('🔄 Save reset. Fresh start!');
+}
+
+// ===== INIT =====
+buildCasinoTabs();buildCasinoPanels();
+buildShopTabs();renderShop();startAutoClicker();
+renderEssenceShop();updateRebirthUI();
+renderThemeSwatches();
+updateAura();updateClickerUI();
+showToast("👑 Welcome to Alim's World! You start with 50 Aura.");
+</script>
+</body>
+</html>
